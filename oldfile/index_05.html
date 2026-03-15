@@ -950,11 +950,11 @@
             width: 100%; padding: 6px; border: 1px solid var(--input-border);
             border-radius: 4px; font-size: 14px; background: var(--input-bg); color: var(--text-primary);
         }
-        .mic-custom-dropdown {
+        .eq-custom-dropdown {
             position: relative;
             width: 100%;
         }
-        .mic-dropdown-trigger {
+        .eq-dropdown-trigger {
             width: 100%;
             min-height: 30px;
             display: flex;
@@ -970,7 +970,7 @@
             font-size: 12px;
             text-align: left;
         }
-        .mic-custom-dropdown.is-empty .mic-dropdown-trigger {
+        .eq-custom-dropdown.is-empty .eq-dropdown-trigger {
             color: color-mix(in srgb, var(--input-bg) 78%, var(--text-secondary));
         }
         .col-source input[type="text"] {
@@ -986,28 +986,28 @@
             line-height: 1.2;
             padding: 6px 8px;
         }
-        .mic-dropdown-trigger:disabled {
+        .eq-dropdown-trigger:disabled {
             cursor: not-allowed;
             opacity: 0.7;
         }
-        .mic-dropdown-value {
+        .eq-dropdown-value {
             min-width: 0;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-        .mic-make {
+        .eq-make {
             color: var(--text-secondary);
         }
-        .mic-model {
+        .eq-model {
             color: var(--text-primary);
         }
-        .mic-caret {
+        .eq-caret {
             color: var(--text-secondary);
             font-size: 11px;
             flex: 0 0 auto;
         }
-        .mic-dropdown-menu {
+        .eq-dropdown-menu {
             position: absolute;
             left: 0;
             right: 0;
@@ -1019,18 +1019,18 @@
             box-shadow: 0 10px 24px rgba(0,0,0,0.3);
             padding: 6px;
         }
-        .mic-dropdown-search {
+        .eq-dropdown-search {
             width: 100%;
             margin-bottom: 6px;
             font-size: 12px;
         }
-        .mic-inline-type-row {
+        .eq-inline-type-row {
             display: flex;
             flex-wrap: wrap;
             gap: 5px;
             margin-bottom: 6px;
         }
-        .mic-inline-type-chip {
+        .eq-inline-type-chip {
             border: 1px solid var(--border-primary);
             border-radius: 999px;
             background: color-mix(in srgb, var(--bg-secondary) 92%, var(--bg-tertiary));
@@ -1040,31 +1040,31 @@
             cursor: pointer;
             transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
         }
-        .mic-inline-type-chip:hover {
+        .eq-inline-type-chip:hover {
             border-color: color-mix(in srgb, var(--accent-primary) 35%, var(--border-primary));
             color: var(--text-primary);
             background: color-mix(in srgb, var(--accent-primary) 6%, var(--bg-secondary));
         }
-        .mic-inline-type-chip.active {
+        .eq-inline-type-chip.active {
             border-color: color-mix(in srgb, var(--accent-primary) 55%, var(--border-primary));
             background: color-mix(in srgb, var(--accent-primary) 10%, var(--bg-secondary));
             color: var(--accent-primary);
         }
-        .mic-dropdown-options {
+        .eq-dropdown-options {
             max-height: 220px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
             gap: 4px;
         }
-        .mic-group-label {
+        .eq-group-label {
             font-size: 10px;
             letter-spacing: 0.3px;
             text-transform: uppercase;
             color: var(--text-muted);
             margin: 2px 2px 0;
         }
-        .mic-option-btn {
+        .eq-option-btn {
             width: 100%;
             border: 1px solid var(--border-primary);
             border-radius: 6px;
@@ -1075,44 +1075,44 @@
             font-size: 12px;
             cursor: pointer;
         }
-        .mic-option-btn:hover {
+        .eq-option-btn:hover {
             border-color: var(--accent-primary);
             background: color-mix(in srgb, var(--accent-primary) 8%, var(--bg-secondary));
         }
-        .mic-option-btn.selected {
+        .eq-option-btn.selected {
             border-color: color-mix(in srgb, var(--accent-primary) 55%, var(--border-primary));
             background: color-mix(in srgb, var(--accent-primary) 10%, var(--bg-secondary));
         }
-        .mic-option-meta {
+        .eq-option-meta {
             color: var(--text-secondary);
             font-size: 10px;
             margin-left: 6px;
         }
-        .mic-option-empty {
+        .eq-option-empty {
             color: var(--text-secondary);
             border-style: dashed;
         }
-        .mic-no-results {
+        .eq-no-results {
             padding: 8px;
             font-size: 11px;
             color: var(--text-secondary);
         }
-        .mic-option-controls {
+        .eq-option-controls {
             display: flex;
             gap: 6px;
             margin-bottom: 4px;
         }
-        .mic-option-controls .mic-option-btn {
+        .eq-option-controls .eq-option-btn {
             flex: 1 1 0;
             text-align: center;
         }
-        .mic-type-filter-row {
+        .eq-type-filter-row {
             display: flex;
             flex-wrap: wrap;
             gap: 6px;
             margin-bottom: 10px;
         }
-        .mic-type-chip {
+        .eq-type-chip {
             border: 1px solid var(--border-primary);
             border-radius: 999px;
             background: color-mix(in srgb, var(--bg-secondary) 88%, var(--bg-tertiary));
@@ -1122,29 +1122,29 @@
             cursor: pointer;
             transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
         }
-        .mic-type-chip:hover {
+        .eq-type-chip:hover {
             border-color: color-mix(in srgb, var(--accent-primary) 45%, var(--border-primary));
             color: var(--text-primary);
             background: color-mix(in srgb, var(--accent-primary) 8%, var(--bg-secondary));
         }
-        .mic-type-chip.active {
+        .eq-type-chip.active {
             border-color: color-mix(in srgb, var(--accent-primary) 60%, var(--border-primary));
             background: color-mix(in srgb, var(--accent-primary) 14%, var(--bg-secondary));
             color: var(--accent-primary);
         }
-        .mic-list-table-wrap {
+        .eq-list-table-wrap {
             border: 1px solid var(--border-primary);
             border-radius: 8px;
             max-height: 60vh;
             overflow: auto;
             background: var(--bg-secondary);
         }
-        .mic-list-table {
+        .eq-list-table {
             width: 100%;
             border-collapse: collapse;
             font-size: 12px;
         }
-        .mic-list-table thead th {
+        .eq-list-table thead th {
             position: sticky;
             top: 0;
             z-index: 1;
@@ -1156,15 +1156,15 @@
             border-bottom: 1px solid var(--border-primary);
             padding: 8px 10px;
         }
-        .mic-list-table tbody td {
+        .eq-list-table tbody td {
             padding: 8px 10px;
             border-bottom: 1px solid color-mix(in srgb, var(--border-primary) 70%, transparent);
             vertical-align: middle;
         }
-        .mic-list-table tbody tr:last-child td {
+        .eq-list-table tbody tr:last-child td {
             border-bottom: none;
         }
-        .mic-row-select-btn {
+        .eq-row-select-btn {
             border: 1px solid var(--border-primary);
             border-radius: 6px;
             background: transparent;
@@ -1174,11 +1174,11 @@
             cursor: pointer;
             white-space: nowrap;
         }
-        .mic-row-select-btn:hover {
+        .eq-row-select-btn:hover {
             border-color: color-mix(in srgb, var(--accent-primary) 55%, var(--border-primary));
             background: color-mix(in srgb, var(--accent-primary) 9%, var(--bg-secondary));
         }
-        .mic-row-select-btn.selected {
+        .eq-row-select-btn.selected {
             border-color: color-mix(in srgb, var(--accent-primary) 60%, var(--border-primary));
             color: var(--accent-primary);
         }
@@ -1648,18 +1648,18 @@
                 <div id="templatePreviewBody"></div>
             </div>
         </div>
-        <div id="micListModal" class="modal" onclick="closeMicListModal(event)">
+        <div id="eqListModal" class="modal" onclick="closeEqListModal(event)">
             <div class="modal-content" style="width:min(1060px, calc(100vw - 48px)); max-height: 86vh; overflow:auto;" onclick="event.stopPropagation()">
                 <div class="modal-header">
-                    <h3 style="color:var(--accent-primary); margin:0;">Microphone Browser</h3>
-                    <button class="btn-muted" type="button" onclick="closeMicListModal()">×</button>
+                    <h3 id="eqListModalTitle" style="color:var(--accent-primary); margin:0;">Equipment Browser</h3>
+                    <button class="btn-muted" type="button" onclick="closeEqListModal()">×</button>
                 </div>
                 <div style="display:flex; gap:8px; margin-bottom:10px; align-items:center;">
-                    <input id="micListModalSearch" type="text" placeholder="Search type, make, or model..." oninput="renderMicListModalRows()">
-                    <button class="btn-muted" type="button" onclick="selectMicOptionFromModal('')">Clear</button>
+                    <input id="eqListModalSearch" type="text" placeholder="Search type, make, or model..." oninput="renderEqListModalRows()">
+                    <button class="btn-muted" type="button" onclick="selectEqOptionFromModal('')">Clear</button>
                 </div>
-                <div id="micTypeFilters" class="mic-type-filter-row"></div>
-                <div id="micListModalRows"></div>
+                <div id="eqTypeFilters" class="eq-type-filter-row"></div>
+                <div id="eqListModalRows"></div>
             </div>
         </div>
         <div id="inventory" class="tab-content">
@@ -1954,8 +1954,9 @@
         const MAX_HISTORY = 30;
         const ENABLE_CUSTOM_MIC_DROPDOWN = true;
         window.isSessionLocked = false;
-        window.activeMicModalIndex = null;
-        window.micTypeFilters = ['LDC', 'SDC', 'Dynamic', 'Ribbon', 'Other'];
+        window.activeEqModalIndex = null;
+        window.activeEqModalField = null;
+        window.eqTypeFilters = [];
         window.enableColors = true;
         const COLOUR_BRIGHTNESS_DEFAULT = 1;
         const COLOUR_OPACITY_DEFAULT = 1;
@@ -2412,13 +2413,26 @@
         }
 
         // --- Select Generation Helpers ---
+        const EQUIPMENT_FIELDS = ['microphone', 'tieLine', 'preamp', 'outboard1', 'outboard2', 'outboard3', 'ad'];
+        function isEquipmentField(field) {
+            return EQUIPMENT_FIELDS.includes(field);
+        }
+        function getEqFieldLabel(field) {
+            const labels = {
+                microphone: 'Microphone',
+                tieLine: 'Tie Line',
+                preamp: 'Pre Amp',
+                outboard1: 'Outboard 1',
+                outboard2: 'Outboard 2',
+                outboard3: 'Outboard 3',
+                ad: 'A/D Converter'
+            };
+            return labels[field] || field;
+        }
         function createSelectHtml(index, field) {
-            if (field === 'microphone' && ENABLE_CUSTOM_MIC_DROPDOWN) {
-                return renderCustomMicrophoneDropdown(index);
-            }
-            let id = field === 'microphone' ? `mic-${index}` : `${field}-${index}`;
+            if (isEquipmentField(field)) return renderCustomEqDropdown(index, field);
             const isEmpty = !sessionData[index][field];
-            return `<select class="session-field-select ${isEmpty ? 'select-empty' : ''}" id="${id}" onchange="updateSessionData(${index}, '${field}', this.value); updateSelectPlaceholderState(this);">${getOptionsHtml(index, field)}</select>`;
+            return `<select class="session-field-select ${isEmpty ? 'select-empty' : ''}" id="${field}-${index}" onchange="updateSessionData(${index}, '${field}', this.value); updateSelectPlaceholderState(this);">${getOptionsHtml(index, field)}</select>`;
         }
         function getMicChannelsPerUnit(item) {
             const n = parseInt(item?.channelsPerUnit, 10);
@@ -2449,148 +2463,174 @@
                 setMicInUseCount(target, getMicInUseCount(target) + 1);
             });
         }
-        function getMicrophoneOptionGroups(index, query = '', selectedTypes = null) {
-            const currentSelection = sessionData[index]?.microphone || '';
-            const q = `${query || ''}`.trim().toLowerCase();
-            const categories = getAllMicTypes();
-            const typeFilterSet = Array.isArray(selectedTypes) && selectedTypes.length
-                ? new Set(selectedTypes.map(type => `${type || ''}`.trim()))
-                : null;
-            const groups = [];
-            categories.forEach(cat => {
-                if (typeFilterSet && !typeFilterSet.has(`${cat || ''}`.trim())) return;
-                const itemsInCat = (equipment.microphones || []).filter(i => i.category === cat);
-                if (itemsInCat.length === 0) return;
-                const grouped = {};
-                itemsInCat.forEach(item => {
-                    const isSelectedHere = item.name === currentSelection;
-                    if (!grouped[item.name]) grouped[item.name] = {
-                        count: 0,
-                        isSelected: false,
-                        make: `${item.make || ''}`.trim()
-                    };
-                    grouped[item.name].count += getMicAvailableSlots(item);
-                    if (isSelectedHere) grouped[item.name].isSelected = true;
-                    if (!grouped[item.name].make && item.make) grouped[item.name].make = `${item.make}`.trim();
+        function getNormalizedEqOptions(index, field) {
+            const currentSel = sessionData[index]?.[field] || '';
+            const options = [];
+
+            if (field === 'microphone') {
+                (equipment.microphones || []).forEach(m => {
+                    const avail = getMicAvailableSlots(m);
+                    const isSel = m.name === currentSel;
+                    if (avail > 0 || isSel) options.push({ value: m.name, displayBase: m.name, groupLabel: m.category || 'Other', filterTag: m.category || 'Other', make: m.make || '', count: isSel ? avail + 1 : avail, isSelected: isSel });
                 });
-                const options = Object.keys(grouped).map(name => {
-                    const g = grouped[name];
-                    if (g.count <= 0 && !g.isSelected) return null;
-                    const displayBase = g.make ? `${g.make} - ${name}` : name;
-                    const matchesQuery = !q
-                        || `${cat || ''}`.toLowerCase().includes(q)
-                        || displayBase.toLowerCase().includes(q)
-                        || name.toLowerCase().includes(q)
-                        || g.make.toLowerCase().includes(q);
-                    if (!matchesQuery) return null;
-                    return {
-                        value: name,
-                        make: g.make,
-                        label: displayBase,
-                        count: g.count,
-                        isSelected: g.isSelected
-                    };
-                }).filter(Boolean);
-                if (options.length) groups.push({ category: cat, options });
-            });
-            return groups;
+            } else if (field.startsWith('outboard')) {
+                const grouped = {};
+                (equipment.outboard || []).forEach(o => {
+                    const isSel = o.name === currentSel;
+                    if (o.status === 'available' || isSel) {
+                        if (!grouped[o.name]) grouped[o.name] = { value: o.name, displayBase: o.name, groupLabel: o.category || 'Other', filterTag: o.category || 'Other', make: o.make || '', count: 0, isSelected: false };
+                        grouped[o.name].count++;
+                        if (isSel) grouped[o.name].isSelected = true;
+                    }
+                });
+                options.push(...Object.values(grouped));
+            } else if (['preamp', 'ad', 'tieLine'].includes(field)) {
+                const units = field === 'preamp' ? equipment.preampUnits : (field === 'ad' ? equipment.adUnits : equipment.tieLines);
+                (units || []).forEach(u => {
+                    (u.channels || []).forEach(c => {
+                        const isSel = c.name === currentSel;
+                        if (c.status === 'available' || isSel) {
+                            options.push({ value: c.name, displayBase: c.name, groupLabel: u.name, filterTag: u.name, make: u.make || '', count: 1, isSelected: isSel });
+                        }
+                    });
+                });
+            }
+            return options;
         }
-        function renderCustomMicOptions(index, query = '', selectedTypes = null) {
-            const groups = getMicrophoneOptionGroups(index, query, selectedTypes);
-            if (!groups.length) return `<div class="mic-no-results">No matching microphones.</div>`;
+        function getEqFilterTags(index, field) {
+            const rawTags = [];
+            getNormalizedEqOptions(index, field).forEach(opt => {
+                const tag = `${opt.filterTag || opt.groupLabel || 'Other'}`.trim() || 'Other';
+                if (!rawTags.includes(tag)) rawTags.push(tag);
+            });
+            if (field === 'microphone') {
+                const preferred = ['LDC', 'SDC', 'Dynamic', 'Ribbon', 'Other'];
+                return [...preferred.filter(t => rawTags.includes(t)), ...rawTags.filter(t => !preferred.includes(t))];
+            }
+            if (field.startsWith('outboard')) {
+                const preferred = ['Compressor', 'EQ', 'Delay', 'Saturation', 'DI', 'Other'];
+                return [...preferred.filter(t => rawTags.includes(t)), ...rawTags.filter(t => !preferred.includes(t))];
+            }
+            return rawTags;
+        }
+        function getGroupedEqOptions(index, field, query = '', selectedTags = null) {
+            const q = `${query || ''}`.trim().toLowerCase();
+            const tagSet = Array.isArray(selectedTags) ? new Set(selectedTags.map(v => `${v || ''}`.trim())) : null;
+            const merged = {};
+            (getNormalizedEqOptions(index, field) || []).forEach(opt => {
+                const key = `${opt.groupLabel || ''}::${opt.value || ''}::${opt.make || ''}::${opt.filterTag || ''}`;
+                if (!merged[key]) merged[key] = { ...opt, count: Number.isFinite(opt.count) ? opt.count : 1, isSelected: !!opt.isSelected };
+                else {
+                    merged[key].count += Number.isFinite(opt.count) ? opt.count : 1;
+                    merged[key].isSelected = merged[key].isSelected || !!opt.isSelected;
+                }
+            });
+            const grouped = {};
+            Object.values(merged).forEach(opt => {
+                const filterTag = `${opt.filterTag || opt.groupLabel || 'Other'}`.trim();
+                if (tagSet && !tagSet.has(filterTag)) return;
+                const text = `${opt.displayBase || opt.value || ''} ${opt.make || ''} ${filterTag} ${opt.groupLabel || ''}`.toLowerCase();
+                if (q && !text.includes(q)) return;
+                const grp = `${opt.groupLabel || 'Other'}`.trim() || 'Other';
+                if (!grouped[grp]) grouped[grp] = [];
+                grouped[grp].push(opt);
+            });
+            return Object.keys(grouped).map(groupLabel => ({ groupLabel, options: grouped[groupLabel] }));
+        }
+        function renderCustomEqOptions(index, field, query = '', selectedTags = null) {
+            const groups = getGroupedEqOptions(index, field, query, selectedTags);
+            if (!groups.length) return `<div class="eq-no-results">No matching options.</div>`;
             const encodedQuery = encodeURIComponent(query || '');
-            const clearRow = `<div class="mic-option-controls"><button type="button" class="mic-option-btn mic-option-empty" onclick="selectMicOption(${index}, '')" onkeydown="handleMicOptionKeydown(${index}, event, '')">Clear</button><button type="button" class="mic-option-btn" onclick="openMicListModal(${index}, '${encodedQuery}')">Expand</button></div>`;
+            const clearRow = `<div class="eq-option-controls"><button type="button" class="eq-option-btn eq-option-empty" onclick="selectEqOption(${index}, '${field}', '')" onkeydown="handleEqOptionKeydown(${index}, '${field}', event, '')">Clear</button><button type="button" class="eq-option-btn" onclick="openEqListModal(${index}, '${field}', '${encodedQuery}')">Expand</button></div>`;
             const body = groups.map(group => {
                 const optionsHtml = group.options.map(opt => {
-                    const countLabel = !opt.isSelected && opt.count > 1 ? `<span class="mic-option-meta">(${opt.count} avail)</span>` : '';
-                    return `<button type="button" class="mic-option-btn ${opt.isSelected ? 'selected' : ''}" onclick="selectMicOption(${index}, '${encodeURIComponent(opt.value)}')" onkeydown="handleMicOptionKeydown(${index}, event, '${encodeURIComponent(opt.value)}')"><span class="mic-make">${escapeHtml(opt.make || '')}${opt.make ? ' ' : ''}</span><span class="mic-model">${escapeHtml(opt.value)}</span>${countLabel}</button>`;
+                    const countLabel = !opt.isSelected && (opt.count || 0) > 1 ? `<span class="eq-option-meta">(${opt.count} avail)</span>` : '';
+                    return `<button type="button" class="eq-option-btn ${opt.isSelected ? 'selected' : ''}" onclick="selectEqOption(${index}, '${field}', '${encodeURIComponent(opt.value || '')}')" onkeydown="handleEqOptionKeydown(${index}, '${field}', event, '${encodeURIComponent(opt.value || '')}')"><span class="eq-make">${escapeHtml(opt.make || '')}${opt.make ? ' ' : ''}</span><span class="eq-model">${escapeHtml(opt.displayBase || opt.value || '')}</span>${countLabel}</button>`;
                 }).join('');
-                return `<div class="mic-group-label">${group.category}</div>${optionsHtml}`;
+                return `<div class="eq-group-label">${escapeHtml(group.groupLabel)}</div>${optionsHtml}`;
             }).join('');
             return `${clearRow}${body}`;
         }
-        function renderCustomMicrophoneDropdown(index) {
-            const selectedName = `${sessionData[index]?.microphone || ''}`.trim();
-            const selectedMic = (equipment.microphones || []).find(m => m.name === selectedName);
-            const selectedMake = `${selectedMic?.make || ''}`.trim();
-            const displayValue = selectedName
-                ? `<span class="mic-make">${escapeHtml(selectedMake || '')}${selectedMake ? ' ' : ''}</span><span class="mic-model">${escapeHtml(selectedName)}</span>`
-                : `<span class="mic-placeholder">Select Microphone...</span>`;
-            return `<div class="mic-custom-dropdown ${selectedName ? '' : 'is-empty'}" id="mic-custom-${index}" data-index="${index}">
-                <button type="button" class="mic-dropdown-trigger" onclick="toggleMicDropdown(${index})" ${window.isSessionLocked ? 'disabled' : ''}>
-                    <span class="mic-dropdown-value">${displayValue}</span>
-                    <span class="mic-caret">▾</span>
+        function renderCustomEqDropdown(index, field) {
+            const selectedValue = `${sessionData[index]?.[field] || ''}`.trim();
+            const normalized = getNormalizedEqOptions(index, field);
+            const selected = normalized.find(opt => `${opt.value || ''}` === selectedValue);
+            const displayValue = selectedValue
+                ? `<span class="eq-make">${escapeHtml(selected?.make || '')}${selected?.make ? ' ' : ''}</span><span class="eq-model">${escapeHtml(selectedValue)}</span>`
+                : `<span class="eq-placeholder">Select ${escapeHtml(getEqFieldLabel(field))}...</span>`;
+            return `<div class="eq-custom-dropdown ${selectedValue ? '' : 'is-empty'}" id="eq-custom-${field}-${index}" data-index="${index}" data-field="${field}">
+                <button type="button" class="eq-dropdown-trigger" onclick="toggleEqDropdown(${index}, '${field}')" ${window.isSessionLocked ? 'disabled' : ''}>
+                    <span class="eq-dropdown-value">${displayValue}</span>
+                    <span class="eq-caret">▾</span>
                 </button>
-                <div class="mic-dropdown-menu" id="mic-menu-${index}" style="display:none;" onclick="event.stopPropagation()">
-                    <input id="mic-search-${index}" class="mic-dropdown-search" type="text" placeholder="Search make or model..." oninput="filterMicDropdownOptions(${index}, this.value)" onkeydown="handleMicSearchKeydown(${index}, event)">
-                    <div class="mic-dropdown-options" id="mic-options-${index}">
-                        ${renderCustomMicOptions(index, '')}
-                    </div>
+                <div class="eq-dropdown-menu" id="eq-menu-${field}-${index}" style="display:none;" onclick="event.stopPropagation()">
+                    <input id="eq-search-${field}-${index}" class="eq-dropdown-search" type="text" placeholder="Search ${escapeHtml(getEqFieldLabel(field).toLowerCase())}..." oninput="filterEqDropdownOptions(${index}, '${field}', this.value)" onkeydown="handleEqSearchKeydown(${index}, '${field}', event)">
+                    <div class="eq-dropdown-options" id="eq-options-${field}-${index}">${renderCustomEqOptions(index, field, '')}</div>
                 </div>
             </div>`;
         }
-        function getMicOptionButtons(index) {
-            return Array.from(document.querySelectorAll(`#mic-options-${index} .mic-option-btn`));
+        function getEqOptionButtons(index, field) {
+            return Array.from(document.querySelectorAll(`#eq-options-${field}-${index} .eq-option-btn`));
         }
-        function closeMicDropdown(index, returnFocus = false) {
-            const menu = document.getElementById(`mic-menu-${index}`);
+        function closeEqDropdown(index, field, returnFocus = false) {
+            const menu = document.getElementById(`eq-menu-${field}-${index}`);
             if (!menu) return;
             menu.style.display = 'none';
             if (returnFocus) {
-                const trigger = document.querySelector(`#mic-custom-${index} .mic-dropdown-trigger`);
+                const trigger = document.querySelector(`#eq-custom-${field}-${index} .eq-dropdown-trigger`);
                 if (trigger) trigger.focus();
             }
         }
-        function closeAllMicDropdowns() {
-            document.querySelectorAll('.mic-dropdown-menu').forEach(menu => { menu.style.display = 'none'; });
+        function closeAllEqDropdowns() {
+            document.querySelectorAll('.eq-dropdown-menu').forEach(menu => { menu.style.display = 'none'; });
         }
-        function toggleMicDropdown(index) {
+        function toggleEqDropdown(index, field) {
             if (window.isSessionLocked) return;
-            const menu = document.getElementById(`mic-menu-${index}`);
+            const menu = document.getElementById(`eq-menu-${field}-${index}`);
             if (!menu) return;
             const isOpen = menu.style.display === 'block';
-            closeAllMicDropdowns();
+            closeAllEqDropdowns();
             if (isOpen) return;
             menu.style.display = 'block';
-            const search = document.getElementById(`mic-search-${index}`);
+            const search = document.getElementById(`eq-search-${field}-${index}`);
             if (search) search.value = '';
-            filterMicDropdownOptions(index, '');
+            filterEqDropdownOptions(index, field, '');
             if (search) search.focus();
         }
-        function filterMicDropdownOptions(index, query) {
-            const optionsWrap = document.getElementById(`mic-options-${index}`);
+        function filterEqDropdownOptions(index, field, query) {
+            const optionsWrap = document.getElementById(`eq-options-${field}-${index}`);
             if (!optionsWrap) return;
-            optionsWrap.innerHTML = renderCustomMicOptions(index, query || '');
+            optionsWrap.innerHTML = renderCustomEqOptions(index, field, query || '');
         }
-        function handleMicSearchKeydown(index, event) {
+        function handleEqSearchKeydown(index, field, event) {
             if (!event) return;
             if (event.key === 'Escape') {
                 event.preventDefault();
-                closeMicDropdown(index, true);
+                closeEqDropdown(index, field, true);
                 return;
             }
             if (event.key === 'ArrowDown') {
                 event.preventDefault();
-                const buttons = getMicOptionButtons(index);
+                const buttons = getEqOptionButtons(index, field);
                 if (buttons.length) buttons[0].focus();
                 return;
             }
             if (event.key === 'Enter') {
-                const buttons = getMicOptionButtons(index);
+                const buttons = getEqOptionButtons(index, field);
                 if (buttons.length) {
                     event.preventDefault();
                     buttons[0].click();
                 }
             }
         }
-        function handleMicOptionKeydown(index, event, encodedValue) {
+        function handleEqOptionKeydown(index, field, event, encodedValue) {
             if (!event) return;
-            const buttons = getMicOptionButtons(index);
+            const buttons = getEqOptionButtons(index, field);
             const current = event.currentTarget;
             const currentIndex = buttons.indexOf(current);
             if (event.key === 'Escape') {
                 event.preventDefault();
-                closeMicDropdown(index, true);
+                closeEqDropdown(index, field, true);
                 return;
             }
             if (event.key === 'ArrowDown') {
@@ -2602,7 +2642,7 @@
             if (event.key === 'ArrowUp') {
                 event.preventDefault();
                 if (currentIndex <= 0) {
-                    const search = document.getElementById(`mic-search-${index}`);
+                    const search = document.getElementById(`eq-search-${field}-${index}`);
                     if (search) search.focus();
                 } else {
                     const prev = buttons[currentIndex - 1];
@@ -2612,108 +2652,77 @@
             }
             if (event.key === 'Enter' || event.key === ' ') {
                 event.preventDefault();
-                selectMicOption(index, encodedValue || '');
+                selectEqOption(index, field, encodedValue || '');
             }
         }
-        function selectMicOption(index, encodedValue) {
+        function selectEqOption(index, field, encodedValue) {
             const value = encodedValue ? decodeURIComponent(encodedValue) : '';
-            updateSessionData(index, 'microphone', value);
-            closeAllMicDropdowns();
+            updateSessionData(index, field, value);
+            closeAllEqDropdowns();
         }
-        function getAllMicTypes() {
-            const preferred = ['LDC', 'SDC', 'Dynamic', 'Ribbon', 'Other'];
-            const seen = new Set();
-            const present = [];
-            (equipment.microphones || []).forEach(item => {
-                const raw = `${item?.category || ''}`.trim();
-                const cat = raw || 'Other';
-                if (seen.has(cat)) return;
-                seen.add(cat);
-                present.push(cat);
-            });
-            const inOrder = preferred.filter(cat => seen.has(cat));
-            const unknown = present.filter(cat => !preferred.includes(cat));
-            return [...inOrder, ...unknown];
-        }
-        function getFlattenedMicOptions(index, query = '') {
-            const groups = getMicrophoneOptionGroups(index, query);
-            const rows = groups.flatMap(group => {
-                return group.options.map(opt => ({
-                    category: group.category,
-                    make: opt.make || '',
-                    model: opt.value || '',
-                    available: Number.isFinite(opt.count) ? opt.count : 0,
-                    isSelected: !!opt.isSelected
-                }));
-            });
-            const availableTypes = getAllMicTypes();
-            const selectedTypes = Array.isArray(window.micTypeFilters)
-                ? window.micTypeFilters.filter(type => availableTypes.includes(type))
-                : [];
-            if (!selectedTypes.length) return [];
-            return rows.filter(row => selectedTypes.includes(`${row.category || ''}`.trim()));
-        }
-        function renderMicTypeFilters() {
-            const wrap = document.getElementById('micTypeFilters');
-            if (!wrap) return;
-            const types = getAllMicTypes();
-            if (!types.length) {
+        function renderEqTypeFilters() {
+            const wrap = document.getElementById('eqTypeFilters');
+            const index = window.activeEqModalIndex;
+            const field = window.activeEqModalField;
+            if (!wrap || !Number.isInteger(index) || !field) return;
+            const tags = getEqFilterTags(index, field);
+            if (!tags.length) {
                 wrap.innerHTML = '';
                 return;
             }
-            let selectedTypes = Array.isArray(window.micTypeFilters)
-                ? window.micTypeFilters.filter(type => types.includes(type))
-                : [];
-            window.micTypeFilters = [...selectedTypes];
-            const allActive = selectedTypes.length === types.length;
-            const allChip = `<button type="button" class="mic-type-chip ${allActive ? 'active' : ''}" onclick="toggleMicTypeFilter('__all__')">All</button>`;
-            const typeChips = types.map(type => {
-                const active = selectedTypes.includes(type);
-                return `<button type="button" class="mic-type-chip ${active ? 'active' : ''}" onclick="toggleMicTypeFilter('${encodeURIComponent(type)}')">${escapeHtml(type)}</button>`;
+            let selected = Array.isArray(window.eqTypeFilters) ? window.eqTypeFilters.filter(tag => tags.includes(tag)) : [];
+            if (!selected.length) selected = [...tags];
+            window.eqTypeFilters = [...selected];
+            const allActive = selected.length === tags.length;
+            const allChip = `<button type="button" class="eq-type-chip ${allActive ? 'active' : ''}" onclick="toggleEqTypeFilter('__all__')">All</button>`;
+            const chips = tags.map(tag => {
+                const active = selected.includes(tag);
+                return `<button type="button" class="eq-type-chip ${active ? 'active' : ''}" onclick="toggleEqTypeFilter('${encodeURIComponent(tag)}')">${escapeHtml(tag)}</button>`;
             }).join('');
-            wrap.innerHTML = `${allChip}${typeChips}`;
+            wrap.innerHTML = `${allChip}${chips}`;
         }
-        function toggleMicTypeFilter(encodedType) {
-            const types = getAllMicTypes();
-            if (!types.length) return;
-            const current = Array.isArray(window.micTypeFilters)
-                ? window.micTypeFilters.filter(type => types.includes(type))
-                : [];
-            const allSelected = current.length === types.length;
+        function toggleEqTypeFilter(encodedType) {
+            const index = window.activeEqModalIndex;
+            const field = window.activeEqModalField;
+            if (!Number.isInteger(index) || !field) return;
+            const tags = getEqFilterTags(index, field);
+            if (!tags.length) return;
+            const current = Array.isArray(window.eqTypeFilters) ? window.eqTypeFilters.filter(tag => tags.includes(tag)) : [];
+            const allSelected = current.length === tags.length;
             if (encodedType === '__all__') {
-                window.micTypeFilters = allSelected ? [] : [...types];
+                window.eqTypeFilters = allSelected ? [] : [...tags];
             } else {
-                const type = decodeURIComponent(encodedType || '');
-                if (!types.includes(type)) return;
+                const tag = decodeURIComponent(encodedType || '');
+                if (!tags.includes(tag)) return;
                 if (allSelected) {
-                    window.micTypeFilters = [type];
-                    renderMicTypeFilters();
-                    renderMicListModalRows();
+                    window.eqTypeFilters = [tag];
+                    renderEqTypeFilters();
+                    renderEqListModalRows();
                     return;
                 }
                 const set = new Set(current);
-                if (set.has(type)) {
-                    set.delete(type);
-                } else {
-                    set.add(type);
-                }
-                window.micTypeFilters = types.filter(t => set.has(t));
+                if (set.has(tag)) set.delete(tag);
+                else set.add(tag);
+                window.eqTypeFilters = tags.filter(t => set.has(t));
             }
-            renderMicTypeFilters();
-            renderMicListModalRows();
+            renderEqTypeFilters();
+            renderEqListModalRows();
         }
-        function openMicListModal(index, encodedQuery = '') {
+        function openEqListModal(index, field, encodedQuery = '') {
             if (window.isSessionLocked) return;
-            const modal = document.getElementById('micListModal');
-            const search = document.getElementById('micListModalSearch');
+            const modal = document.getElementById('eqListModal');
+            const search = document.getElementById('eqListModalSearch');
+            const title = document.getElementById('eqListModalTitle');
             if (!modal) return;
-            window.activeMicModalIndex = index;
-            window.micTypeFilters = getAllMicTypes();
-            closeAllMicDropdowns();
+            window.activeEqModalIndex = index;
+            window.activeEqModalField = field;
+            window.eqTypeFilters = getEqFilterTags(index, field);
+            closeAllEqDropdowns();
             modal.style.display = 'block';
+            if (title) title.textContent = `${getEqFieldLabel(field)} Browser`;
             if (search) search.value = encodedQuery ? decodeURIComponent(encodedQuery) : '';
-            renderMicTypeFilters();
-            renderMicListModalRows();
+            renderEqTypeFilters();
+            renderEqListModalRows();
             if (search) {
                 setTimeout(() => {
                     search.focus();
@@ -2721,43 +2730,54 @@
                 }, 0);
             }
         }
-        function closeMicListModal(event) {
-            if (event && event.target && event.target.id !== 'micListModal') return;
-            const modal = document.getElementById('micListModal');
+        function closeEqListModal(event) {
+            if (event && event.target && event.target.id !== 'eqListModal') return;
+            const modal = document.getElementById('eqListModal');
             if (modal) modal.style.display = 'none';
-            window.activeMicModalIndex = null;
+            window.activeEqModalIndex = null;
+            window.activeEqModalField = null;
         }
-        function renderMicListModalRows() {
-            const rowsWrap = document.getElementById('micListModalRows');
-            const search = document.getElementById('micListModalSearch');
-            const index = window.activeMicModalIndex;
+        function renderEqListModalRows() {
+            const rowsWrap = document.getElementById('eqListModalRows');
+            const search = document.getElementById('eqListModalSearch');
+            const index = window.activeEqModalIndex;
+            const field = window.activeEqModalField;
             if (!rowsWrap) return;
-            if (!Number.isInteger(index) || index < 0) {
-                rowsWrap.innerHTML = `<div class="mic-no-results">No active row selected.</div>`;
+            if (!Number.isInteger(index) || !field) {
+                rowsWrap.innerHTML = `<div class="eq-no-results">No active row selected.</div>`;
                 return;
             }
-            const rows = getFlattenedMicOptions(index, search ? search.value : '');
+            const selectedTags = Array.isArray(window.eqTypeFilters) ? window.eqTypeFilters : [];
+            const groups = getGroupedEqOptions(index, field, search ? search.value : '', selectedTags);
+            const rows = groups.flatMap(group => group.options.map(opt => ({
+                category: opt.filterTag || group.groupLabel || 'Other',
+                make: opt.make || '',
+                value: opt.value || '',
+                count: Number.isFinite(opt.count) ? opt.count : 1,
+                isSelected: !!opt.isSelected
+            })));
             if (!rows.length) {
-                rowsWrap.innerHTML = `<div class="mic-no-results">No matching microphones.</div>`;
+                rowsWrap.innerHTML = `<div class="eq-no-results">No matching options.</div>`;
                 return;
             }
             const html = rows.map(row => {
-                const encodedValue = encodeURIComponent(row.model || '');
-                const availableLabel = row.isSelected ? 'Selected' : `${Math.max(0, row.available || 0)}`;
+                const encodedValue = encodeURIComponent(row.value || '');
+                const availableLabel = row.isSelected ? 'Selected' : `${Math.max(0, row.count || 0)}`;
                 return `<tr>
                     <td>${escapeHtml(row.category)}</td>
-                    <td><div style="display:flex; align-items:center; justify-content:space-between; gap:8px;"><span>${escapeHtml(row.make || '—')}</span><button type="button" class="mic-row-select-btn ${row.isSelected ? 'selected' : ''}" onclick="selectMicOptionFromModal('${encodedValue}')">${row.isSelected ? 'Selected' : 'Select'}</button></div></td>
-                    <td>${escapeHtml(row.model)}</td>
+                    <td><div style="display:flex; align-items:center; justify-content:space-between; gap:8px;"><span>${escapeHtml(row.make || '—')}</span><button type="button" class="eq-row-select-btn ${row.isSelected ? 'selected' : ''}" onclick="selectEqOptionFromModal('${encodedValue}')">${row.isSelected ? 'Selected' : 'Select'}</button></div></td>
+                    <td>${escapeHtml(row.value)}</td>
                     <td>${escapeHtml(availableLabel)}</td>
                 </tr>`;
             }).join('');
-            rowsWrap.innerHTML = `<div class="mic-list-table-wrap"><table class="mic-list-table"><thead><tr><th style="width:120px;">Category</th><th style="width:300px;">Make</th><th>Model</th><th style="width:100px;">Avail</th></tr></thead><tbody>${html}</tbody></table></div>`;
+            rowsWrap.innerHTML = `<div class="eq-list-table-wrap"><table class="eq-list-table"><thead><tr><th style="width:120px;">Category</th><th style="width:300px;">Make/Unit</th><th>Option</th><th style="width:100px;">Avail</th></tr></thead><tbody>${html}</tbody></table></div>`;
         }
-        function selectMicOptionFromModal(encodedValue) {
-            const index = window.activeMicModalIndex;
-            if (!Number.isInteger(index) || index < 0) return;
-            selectMicOption(index, encodedValue || '');
-            closeMicListModal();
+        function selectEqOptionFromModal(encodedValue) {
+            const index = window.activeEqModalIndex;
+            const field = window.activeEqModalField;
+            if (!Number.isInteger(index) || !field) return;
+            selectEqOption(index, field, encodedValue || '');
+            closeEqListModal();
         }
         function updateSelectPlaceholderState(selectEl) {
             if (!selectEl) return;
@@ -2831,23 +2851,17 @@
 
         // THIS FIXES THE DROPDOWN BUG. It silently rebuilds the options in all other rows when gear is assigned.
         function refreshAllDropdowns(field) {
-            if (field === 'microphone' && ENABLE_CUSTOM_MIC_DROPDOWN) {
+            if (!isEquipmentField(field)) return;
+            EQUIPMENT_FIELDS.forEach(eqField => {
                 sessionData.forEach((_, idx) => {
-                    const wrap = document.getElementById(`mic-custom-${idx}`);
-                    if (wrap) wrap.outerHTML = renderCustomMicrophoneDropdown(idx);
+                    const wrap = document.getElementById(`eq-custom-${eqField}-${idx}`);
+                    if (wrap) wrap.outerHTML = renderCustomEqDropdown(idx, eqField);
                 });
-                return;
-            }
-            let prefix = field === 'microphone' ? 'mic' : field;
-            sessionData.forEach((session, idx) => {
-                const selectEl = document.getElementById(`${prefix}-${idx}`);
-                if (selectEl) {
-                    const currentVal = selectEl.value;
-                    selectEl.innerHTML = getOptionsHtml(idx, field);
-                    selectEl.value = currentVal;
-                    updateSelectPlaceholderState(selectEl);
-                }
             });
+            if (Number.isInteger(window.activeEqModalIndex) && window.activeEqModalField) {
+                renderEqTypeFilters();
+                renderEqListModalRows();
+            }
         }
 
         function updateSessionData(index, field, value) {
@@ -2951,33 +2965,48 @@
 
         function addAutoFillHandlers() {
             // Allows auto-filling for ALL gear now
-            const selects = document.querySelectorAll('select[id^="mic-"], select[id^="preamp-"], select[id^="outboard"], select[id^="ad-"], select[id^="tieLine-"]');
-            selects.forEach(select => {
-                select.addEventListener('mousedown', handleAutoFillStart);
+            const controls = document.querySelectorAll('.eq-dropdown-trigger');
+            controls.forEach(control => {
+                control.addEventListener('mousedown', handleAutoFillStart);
             });
         }
 
         function handleAutoFillStart(e) {
             exitClearModeForEditing();
-            if (e.target.tagName === 'SELECT' && e.target.value) {
-                const rect = e.target.getBoundingClientRect();
-                const isNearBottomRight = (e.clientX > rect.right - 15) && (e.clientY > rect.bottom - 15);
-                
-                if (isNearBottomRight) {
-                    e.preventDefault();
-                    autoFillStartIndex = parseInt(e.target.id.split('-')[1]);
-                    autoFillColumn = e.target.closest('td').dataset.autofill;
-                    autoFillBaseValue = e.target.value;
-                    autoFillActive = true;
-                    autoStartIdx = autoFillStartIndex;
-                    autoCol = autoFillColumn;
-                    autoBase = autoFillBaseValue;
-                    e.target.parentElement.classList.add('auto-fill-selection');
-                    
-                    document.addEventListener('mousemove', handleDrag);
-                    document.addEventListener('mouseup', handleDropFill);
+            const target = e.target;
+            let value = '';
+            let rowIndex = null;
+            let host = null;
+            if (target.tagName === 'SELECT' && target.value) {
+                value = target.value;
+                rowIndex = parseInt(target.id.split('-')[1], 10);
+                host = target.parentElement;
+            } else if (target.classList && target.classList.contains('eq-dropdown-trigger')) {
+                const wrap = target.closest('.eq-custom-dropdown');
+                const idx = parseInt(wrap?.dataset?.index || '-1', 10);
+                const field = `${wrap?.dataset?.field || ''}`;
+                if (idx >= 0 && field) {
+                    value = `${sessionData[idx]?.[field] || ''}`;
+                    rowIndex = idx;
+                    host = wrap;
                 }
             }
+            if (!value || rowIndex === null || Number.isNaN(rowIndex)) return;
+            const rect = target.getBoundingClientRect();
+            const isNearBottomRight = (e.clientX > rect.right - 15) && (e.clientY > rect.bottom - 15);
+            if (!isNearBottomRight) return;
+            e.preventDefault();
+            autoFillStartIndex = rowIndex;
+            autoFillColumn = target.closest('td')?.dataset?.autofill || null;
+            autoFillBaseValue = value;
+            if (!autoFillColumn) return;
+            autoFillActive = true;
+            autoStartIdx = autoFillStartIndex;
+            autoCol = autoFillColumn;
+            autoBase = autoFillBaseValue;
+            if (host) host.classList.add('auto-fill-selection');
+            document.addEventListener('mousemove', handleDrag);
+            document.addEventListener('mouseup', handleDropFill);
         }
 
         function handleDrag(e) {
@@ -4717,7 +4746,7 @@
                 const mic = (equipment.microphones || []).find(m => m.name === model);
                 const make = `${mic?.make || ''}`.trim();
                 if (!make) return escapeHtml(model);
-                return `<span class="mic-make-print">${escapeHtml(make)}</span> <span class="mic-model-print">${escapeHtml(model)}</span>`;
+                return `<span class="eq-make-print">${escapeHtml(make)}</span> <span class="eq-model-print">${escapeHtml(model)}</span>`;
             };
             const tableRows = activeChannels.map(session => {
                 const sourceIdx = Number.isInteger(session.channel) ? session.channel - 1 : null;
@@ -4748,8 +4777,8 @@
                     th, td { border: 1px solid #333; padding: 8px; text-align: left; }
                     th { background: #333; color: white; text-transform: uppercase; }
                     tr:nth-child(even) { background: #f9f9f9; }
-                    .mic-make-print { color: #555; font-weight: 500; letter-spacing: 0.1px; }
-                    .mic-model-print { color: #111; font-weight: 600; }
+                    .eq-make-print { color: #555; font-weight: 500; letter-spacing: 0.1px; }
+                    .eq-model-print { color: #111; font-weight: 600; }
                     .print-btn { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 10px; }
                     @media print { .no-print { display: none; } body { margin: 0; } }
                 </style>
@@ -5080,12 +5109,12 @@
                 const inPopover = !!(target && target.closest('.setup-popover'));
                 const inSessionTable = !!(target && target.closest('#sessionTable'));
                 const isClearModeBtn = target && target.closest('#clearModeBtn');
-                const inMicDropdown = !!(target && target.closest('.mic-custom-dropdown'));
+                const inEqDropdown = !!(target && target.closest('.eq-custom-dropdown'));
                 if (!inSetupMenu) closeSetupMenu();
                 if (!inDataMenu) closeDataMenu();
                 if (!inInventorySetupMenu) closeInventorySetupMenu();
                 if (!inSetupMenu && !inPopover) closeAllSetupPanels();
-                if (!inMicDropdown) closeAllMicDropdowns();
+                if (!inEqDropdown) closeAllEqDropdowns();
                 if (window.clearMode && !inSessionTable && !isClearModeBtn) {
                     exitClearModeForEditing();
                 }
