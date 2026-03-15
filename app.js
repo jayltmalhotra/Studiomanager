@@ -37,7 +37,8 @@ let equipment = {
             status: 'available',
             channels: Array.from({length: 16}, (_, i) => ({ name: 'Line ' + (i + 1), status: 'available' }))
         }
-    ]
+    ],
+    hardNormals: []
 };
 
 let sessionData = [];
@@ -96,7 +97,10 @@ function getDefaultPreferences() {
                 { from: ' 3', to: ' 4', trigger: 'forward', enabled: true }
             ]
         },
-        hardNormals: [],
+        dawNamer: {
+            mergeStereo: true,
+            useShortNames: false
+        },
         autoColour: {
             groups: clonePreferences(DEFAULT_AUTO_COLOUR_GROUPS)
         }
@@ -152,9 +156,33 @@ function normalizePreferences(input) {
     merged.sourceAutoPair.onlyWhenNextRowEmpty = sap.onlyWhenNextRowEmpty !== false;
     merged.sourceAutoPair.exactPairs = normalizePreferencePairs(sap.exactPairs, 'exact');
     merged.sourceAutoPair.suffixPairs = normalizePreferencePairs(sap.suffixPairs, 'suffix');
-    merged.hardNormals = Array.isArray(input?.hardNormals) ? input.hardNormals : [];
+    const daw = input.dawNamer || {};
+    merged.dawNamer = {
+        mergeStereo: daw.mergeStereo !== false,
+        useShortNames: daw.useShortNames === true
+    };
     merged.autoColour.groups = normalizeAutoColourGroups(input.autoColour?.groups);
     return merged;
+}
+function normalizeHardNormals(items) {
+    if (!Array.isArray(items)) return [];
+    return items
+        .map(item => ({
+            tieLine: `${item?.tieLine || ''}`.trim(),
+            preamp: `${item?.preamp || ''}`.trim(),
+            ad: `${item?.ad || ''}`.trim()
+        }))
+        .filter(item => item.tieLine);
+}
+function ensureEquipmentDefaults(input) {
+    const next = (input && typeof input === 'object') ? input : {};
+    if (!Array.isArray(next.microphones)) next.microphones = [];
+    if (!Array.isArray(next.preampUnits)) next.preampUnits = [];
+    if (!Array.isArray(next.outboard)) next.outboard = [];
+    if (!Array.isArray(next.adUnits)) next.adUnits = [];
+    if (!Array.isArray(next.tieLines)) next.tieLines = [];
+    next.hardNormals = normalizeHardNormals(next.hardNormals);
+    return next;
 }
 window.preferences = normalizePreferences(null);
 const TEMPLATE_FIELDS = [
@@ -1221,7 +1249,7 @@ function updateSessionData(index, field, value) {
     if (value) markEquipmentInUse(field, value);
     // Smart Hard Normalling Trigger
     if (field === 'tieLine' && value) {
-        const normals = window.preferences?.hardNormals || [];
+        const normals = equipment.hardNormals || [];
         const normalRoute = normals.find(n => n.tieLine === value);
         if (normalRoute) {
             if (normalRoute.preamp && checkChannelAvailable('preamp', normalRoute.preamp)) {
@@ -1598,11 +1626,11 @@ function createPreferenceNormalRow(normal = {}) {
     `;
     return row;
 }
-function renderPreferenceNormals(normals) {
+function renderPreferenceNormals() {
     const container = document.getElementById('prefNormalsList');
     if (!container) return;
     container.innerHTML = '';
-    const safe = Array.isArray(normals) ? normals : [];
+    const safe = Array.isArray(equipment?.hardNormals) ? equipment.hardNormals : [];
     if (!safe.length) {
         container.appendChild(createPreferenceNormalRow());
         return;
@@ -1668,12 +1696,16 @@ function renderPreferencesUI() {
     const sourceBox = document.getElementById('prefSourceSuggestions');
     const autoPairEnabled = document.getElementById('prefAutoPairEnabled');
     const onlyWhenNextEmpty = document.getElementById('prefOnlyWhenNextEmpty');
+    const dawMergeStereo = document.getElementById('prefDawMergeStereo');
+    const dawUseShortNames = document.getElementById('prefDawUseShortNames');
     if (sourceBox) sourceBox.value = prefs.sourceSuggestions.join('\n');
     if (autoPairEnabled) autoPairEnabled.checked = prefs.sourceAutoPair.enabled !== false;
     if (onlyWhenNextEmpty) onlyWhenNextEmpty.checked = prefs.sourceAutoPair.onlyWhenNextRowEmpty !== false;
+    if (dawMergeStereo) dawMergeStereo.checked = prefs.dawNamer?.mergeStereo !== false;
+    if (dawUseShortNames) dawUseShortNames.checked = prefs.dawNamer?.useShortNames === true;
     renderPreferencePairs('exact', prefs.sourceAutoPair.exactPairs);
     renderPreferencePairs('suffix', prefs.sourceAutoPair.suffixPairs);
-    renderPreferenceNormals(prefs.hardNormals);
+    renderPreferenceNormals();
     renderPreferenceColourGroups(prefs.autoColour?.groups || []);
     renderManualColorGridFromPreferences(prefs.autoColour?.groups || []);
     renderAutoColourDiagnostics(prefs.autoColour?.groups || []);
@@ -1703,11 +1735,32 @@ function buildPreferencesDraftFromUI() {
     const sourceBox = document.getElementById('prefSourceSuggestions');
     const autoPairEnabled = document.getElementById('prefAutoPairEnabled');
     const onlyWhenNextEmpty = document.getElementById('prefOnlyWhenNextEmpty');
+    const dawMergeStereo = document.getElementById('prefDawMergeStereo');
+    const dawUseShortNames = document.getElementById('prefDawUseShortNames');
     const sourceSuggestions = `${sourceBox?.value || ''}`
         .split('\n')
         .map(v => v.trim())
         .filter(Boolean);
-    const hardNormals = Array.from(document.querySelectorAll('.pref-normal-row'))
+    return normalizePreferences({
+        version: 1,
+        sourceSuggestions,
+        sourceAutoPair: {
+            enabled: !!autoPairEnabled?.checked,
+            onlyWhenNextRowEmpty: !!onlyWhenNextEmpty?.checked,
+            exactPairs: readPreferencePairs('exact'),
+            suffixPairs: readPreferencePairs('suffix')
+        },
+        dawNamer: {
+            mergeStereo: dawMergeStereo?.checked !== false,
+            useShortNames: !!dawUseShortNames?.checked
+        },
+        autoColour: {
+            groups: readPreferenceColourGroups()
+        }
+    });
+}
+function readPreferenceNormalsFromUI() {
+    return normalizeHardNormals(Array.from(document.querySelectorAll('.pref-normal-row'))
         .map(row => {
             const tie = row.querySelector('.pref-norm-tie');
             const pre = row.querySelector('.pref-norm-pre');
@@ -1718,21 +1771,7 @@ function buildPreferencesDraftFromUI() {
                 ad: `${ad?.value || ''}`.trim()
             };
         })
-        .filter(n => n.tieLine);
-    return normalizePreferences({
-        version: 1,
-        sourceSuggestions,
-        sourceAutoPair: {
-            enabled: !!autoPairEnabled?.checked,
-            onlyWhenNextRowEmpty: !!onlyWhenNextEmpty?.checked,
-            exactPairs: readPreferencePairs('exact'),
-            suffixPairs: readPreferencePairs('suffix')
-        },
-        hardNormals,
-        autoColour: {
-            groups: readPreferenceColourGroups()
-        }
-    });
+    );
 }
 function setPreferencesDirtyState(isDirty) {
     const tabText = document.getElementById('preferencesTabUnsavedText');
@@ -1741,9 +1780,15 @@ function setPreferencesDirtyState(isDirty) {
 function updatePreferencesDirtyState() {
     const saved = normalizePreferences(window.preferences);
     const draft = buildPreferencesDraftFromUI();
-    setPreferencesDirtyState(JSON.stringify(saved) !== JSON.stringify(draft));
+    const savedNormals = normalizeHardNormals(equipment?.hardNormals);
+    const draftNormals = readPreferenceNormalsFromUI();
+    setPreferencesDirtyState(
+        JSON.stringify(saved) !== JSON.stringify(draft) ||
+        JSON.stringify(savedNormals) !== JSON.stringify(draftNormals)
+    );
 }
 function savePreferencesFromUI() {
+    equipment.hardNormals = readPreferenceNormalsFromUI();
     const nextPrefs = buildPreferencesDraftFromUI();
     window.preferences = nextPrefs;
     savePreferencesToStorage();
@@ -1950,6 +1995,9 @@ function importPreferences(event) {
     reader.onload = (ev) => {
         try {
             const parsed = JSON.parse(ev.target.result);
+            if (Array.isArray(parsed?.hardNormals)) {
+                equipment.hardNormals = normalizeHardNormals(parsed.hardNormals);
+            }
             window.preferences = normalizePreferences(parsed);
             savePreferencesToStorage();
             renderPreferencesUI();
@@ -2248,6 +2296,7 @@ function updateSessionSummary() {
     if (channelCountBadge) channelCountBadge.textContent = `${sessionData.length} Ch`;
     renderManualColorChannelOptions();
     populateTemplateChannelSelects();
+    updateCopyButtonTooltip();
 }
 
 function showTab(tabName) {
@@ -3319,7 +3368,7 @@ function importCSVInventory(event) {
         // 1. Split by any OS line ending (Windows, Mac, Linux)
         const rows = text.split(/\r\n|\n|\r/).filter(row => row.trim().length > 0);
         
-        let newEquipment = { microphones:[], tieLines: [], preampUnits: [], outboard: [], adUnits:[] };
+        let newEquipment = { microphones:[], tieLines: [], preampUnits: [], outboard: [], adUnits:[], hardNormals: [] };
         
         // 2. Robust CSV row parser (handles commas inside quotes)
         const parseCSVRow = (str) => {
@@ -3380,7 +3429,7 @@ function importCSVInventory(event) {
         
         // 4. Apply changes and refresh UI
         pushHistory();
-        equipment = newEquipment;
+        equipment = ensureEquipmentDefaults(newEquipment);
         initializeSession(sessionData.length || 24);
         updateSessionTable();
         updateEquipmentTables();
@@ -3421,7 +3470,7 @@ function importData(e) {
     reader.onload = (ev) => { 
         pushHistory();
         const d = JSON.parse(ev.target.result); 
-        equipment = d.equipment; 
+        equipment = ensureEquipmentDefaults(d.equipment);
         sessionData = d.sessionData; 
         customTemplates = d.customTemplates || [];
         window.manualRowColors = d.manualRowColors || {};
@@ -3485,24 +3534,67 @@ async function copyDataToClipboard() {
         alert('Current session data copied to clipboard.');
     }
 }
-async function copyTrackNames() {
-    // Filter out empty rows and grab just the source names
-    const tracks = sessionData
+function getDawExportTracks() {
+    const prefs = normalizePreferences(window.preferences);
+    const mergeStereo = prefs.dawNamer?.mergeStereo !== false;
+    const useShortNames = prefs.dawNamer?.useShortNames === true;
+    const shortNameMap = [
+        ['Overhead', 'OH'],
+        ['Snare', 'Snr'],
+        ['Bottom', 'Btm'],
+        ['Acoustic', 'Acc'],
+        ['Room', 'Rm']
+    ];
+    let tracks = sessionData
         .filter(s => s.source && s.source.trim() !== '')
         .map(s => s.source.trim());
-
+    if (useShortNames) {
+        tracks = tracks.map(name => {
+            let out = name;
+            shortNameMap.forEach(([from, to]) => {
+                out = out.replace(new RegExp(`\\b${from}\\b`, 'gi'), to);
+            });
+            return out;
+        });
+    }
+    const merged = [];
+    let monoCount = 0;
+    let stereoCount = 0;
+    for (let i = 0; i < tracks.length; i++) {
+        const current = tracks[i];
+        if (
+            mergeStereo &&
+            /\sL$/.test(current) &&
+            i + 1 < tracks.length &&
+            tracks[i + 1] === `${current.slice(0, -2)} R`
+        ) {
+            merged.push(current.slice(0, -2));
+            stereoCount++;
+            i++;
+            continue;
+        }
+        merged.push(current);
+        monoCount++;
+    }
+    return { tracks: merged, monoCount, stereoCount };
+}
+function updateCopyButtonTooltip() {
+    const btn = document.getElementById('copyTrackNamesBtn');
+    if (!btn) return;
+    const { tracks, monoCount, stereoCount } = getDawExportTracks();
+    btn.title = `Copies ${tracks.length} tracks (${monoCount} Mono, ${stereoCount} Stereo)`;
+}
+async function copyTrackNames() {
+    const { tracks } = getDawExportTracks();
     if (tracks.length === 0) {
         alert('No sources found to copy!');
         return;
     }
-
     const textToCopy = tracks.join('\n');
-    
     try {
         await navigator.clipboard.writeText(textToCopy);
         alert(`Success! Copied ${tracks.length} track names to your clipboard.\n\nYou can now paste them directly into your DAW or batch renamer.`);
     } catch (err) {
-        // Fallback for older browsers
         const ta = document.createElement('textarea');
         ta.value = textToCopy;
         ta.style.position = 'fixed';
@@ -3550,10 +3642,13 @@ function changeTheme(theme) {
 
 // BOOTUP
 document.addEventListener('DOMContentLoaded', () => {
+    let legacyHardNormals = [];
     const savedPreferences = localStorage.getItem(PREFERENCES_STORAGE_KEY);
     if (savedPreferences) {
         try {
-            window.preferences = normalizePreferences(JSON.parse(savedPreferences));
+            const parsedPrefs = JSON.parse(savedPreferences);
+            legacyHardNormals = normalizeHardNormals(parsedPrefs?.hardNormals);
+            window.preferences = normalizePreferences(parsedPrefs);
         } catch (err) {
             window.preferences = getDefaultPreferences();
         }
@@ -3563,7 +3658,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedData = localStorage.getItem('studioApp_data');
     if (savedData) {
         const d = JSON.parse(savedData);
-        equipment = d.equipment || equipment; // Fallback to default if undefined
+        equipment = ensureEquipmentDefaults(d.equipment || equipment); // Fallback to default if undefined
         sessionData = d.sessionData || [];
         customTemplates = d.customTemplates || [];
         window.manualRowColors = d.manualRowColors || {};
@@ -3578,6 +3673,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.colourOpacity = d.colourSettings?.opacity ?? window.colourOpacity;
         if (d.preferences) window.preferences = normalizePreferences(d.preferences);
     } else {
+        equipment = ensureEquipmentDefaults(equipment);
         initializeSession(24);
         window.sessionMeta = {
             artist: '',
@@ -3585,6 +3681,9 @@ document.addEventListener('DOMContentLoaded', () => {
             engineer: '',
             date: new Date().toISOString().split('T')[0]
         };
+    }
+    if ((!Array.isArray(equipment.hardNormals) || equipment.hardNormals.length === 0) && legacyHardNormals.length) {
+        equipment.hardNormals = legacyHardNormals;
     }
     savePreferencesToStorage();
     const savedTheme = localStorage.getItem('studioApp_theme') || 'dusk';

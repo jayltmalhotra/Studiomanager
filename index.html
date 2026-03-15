@@ -173,7 +173,7 @@
                     <button id="redoBtn" class="btn-muted" onclick="redoAction()" title="Redo (Ctrl/Cmd+Shift+Z)">Redo</button>
                     <button id="clearModeBtn" class="btn-muted" onclick="toggleClearMode()" title="Enable click/drag clear mode">Clear Mode: Off</button>
                     <button id="clearSessionBtn" class="btn-muted" onclick="clearSessionBoard()" title="Clear all row assignments">Clear Session</button>
-                    <button class="btn-muted" onclick="copyTrackNames()" title="Copy a vertical list of sources for your DAW">📋 Copy Track Names</button>
+                    <button id="copyTrackNamesBtn" class="btn-muted" onclick="copyTrackNames()" title="Copy a vertical list of sources for your DAW">📋 Copy Track Names</button>
                     <span class="session-action-meta">Channels: <strong id="channelCountBadge">24 Ch</strong></span>
                     <div id="setupMenuWrap" style="position: relative;">
                         <button id="setupMenuBtn" class="btn-muted" onclick="toggleSetupMenu(event)" title="Session setup tools">Setup ▾</button>
@@ -423,6 +423,22 @@
                         </div>
                         <div id="prefNormalsList" style="display:flex; flex-direction:column; gap:6px;"></div>
                         <button class="btn-muted" type="button" style="margin-top:8px;" onclick="addPreferenceNormalRow()">+ Add Normal Route</button>
+                    </div>
+                </div>
+                <div class="panel-box pref-section" id="prefDawExportSection" style="background: var(--bg-tertiary); padding: 16px; border-radius: 10px; border: 1px solid var(--border-primary);">
+                    <button class="pref-section-header" type="button" onclick="togglePreferencesSection(this)">
+                        <h3 style="color:var(--accent-primary);">DAW Export Settings</h3>
+                        <span class="pref-section-toggle">Show</span>
+                    </button>
+                    <div class="pref-section-body">
+                        <label class="pref-top-toggle-label">
+                            <input id="prefDawMergeStereo" type="checkbox" checked>
+                            Merge Stereo L/R Pairs into single tracks
+                        </label>
+                        <label class="pref-top-toggle-label">
+                            <input id="prefDawUseShortNames" type="checkbox">
+                            Use Short Names (e.g. Snr, OH, Btm)
+                        </label>
                     </div>
                 </div>
             </div>
