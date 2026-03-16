@@ -129,9 +129,7 @@ h1, h2, h3, h4, h5, h6, strong, th, .tab, .btn-style, .btn-muted, .accordion-tit
 }
 
 .theme-switcher {
-    position: absolute;
-    top: 20px;
-    right: 20px;
+    position: static;
     display: flex;
     gap: 6px;
     background: var(--bg-tertiary);
@@ -140,6 +138,7 @@ h1, h2, h3, h4, h5, h6, strong, th, .tab, .btn-style, .btn-muted, .accordion-tit
     border: 1px solid var(--border-primary);
     align-items: center;
     flex-wrap: wrap;
+    justify-content: flex-start;
 }
 .theme-label {
     font-size: 11px;
@@ -428,6 +427,7 @@ h1, h2, h3, h4, h5, h6, strong, th, .tab, .btn-style, .btn-muted, .accordion-tit
 }
 .pref-section-header h3 {
     margin: 0;
+    color: var(--accent-primary);
 }
 .pref-section-toggle {
     color: var(--text-secondary);
@@ -441,6 +441,76 @@ h1, h2, h3, h4, h5, h6, strong, th, .tab, .btn-style, .btn-muted, .accordion-tit
 }
 .pref-section.is-open .pref-section-body {
     display: block;
+}
+.pref-panel {
+    background: var(--bg-tertiary);
+    padding: 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border-primary);
+}
+.pref-panel-spaced {
+    margin-top: 18px;
+}
+.pref-help-copy {
+    margin: 0 0 10px;
+    color: var(--text-secondary);
+}
+.pref-subhead {
+    margin-bottom: 8px;
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+.pref-action-row-end {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 8px;
+}
+.pref-action-row-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.pref-list-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.pref-normal-header-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr auto;
+    gap: 6px;
+    margin-bottom: 6px;
+    font-size: 11px;
+    color: var(--text-secondary);
+    padding-left: 2px;
+}
+.pref-divider-block {
+    margin-top: 10px;
+    border-top: 1px solid var(--border-primary);
+    padding-top: 10px;
+}
+.pref-label-compact {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+.pref-note-md {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+.pref-note-sm {
+    color: var(--text-secondary);
+    font-size: 12px;
+    margin-bottom: 4px;
+}
+.pref-note-xs {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--text-secondary);
 }
 #manualColorMatchInfo {
     color: var(--text-secondary);
@@ -513,6 +583,70 @@ h1, h2, h3, h4, h5, h6, strong, th, .tab, .btn-style, .btn-muted, .accordion-tit
     transform: scale(0.92);
     transform-origin: center;
     accent-color: var(--accent-primary);
+}
+#prefThemeSection .theme-switcher {
+    margin: 0 0 10px;
+    background: color-mix(in srgb, var(--bg-secondary) 72%, var(--bg-tertiary));
+    border-radius: 10px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    align-items: stretch;
+    padding: 8px;
+}
+#prefThemeSection .theme-label {
+    grid-column: 1 / -1;
+    padding: 0 2px;
+}
+#prefThemeSection .theme-btn {
+    width: 100%;
+    justify-content: center;
+}
+#prefThemeSection .theme-preset-btn {
+    color: var(--text-secondary);
+    border-style: dashed;
+}
+#customThemeBuilder {
+    margin-top: 10px;
+}
+.pref-theme-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+.pref-theme-actions .btn-muted {
+    font-size: 11px;
+    line-height: 1.2;
+    padding: 6px 10px;
+}
+.pref-theme-builder-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 6px;
+}
+.pref-theme-color-label {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 6px;
+    border: 1px solid color-mix(in srgb, var(--border-primary) 88%, transparent);
+    border-radius: 8px;
+    padding: 6px 8px;
+    background: color-mix(in srgb, var(--bg-secondary) 80%, transparent);
+    color: var(--text-secondary);
+    font-size: 11px;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+.pref-theme-color-label input[type="color"] {
+    width: 26px;
+    min-width: 26px;
+    height: 22px;
+    border: 1px solid var(--border-primary);
+    border-radius: 5px;
+    padding: 1px;
+    background: transparent;
+    cursor: pointer;
 }
 .pref-pair-row {
     border: 1px solid color-mix(in srgb, var(--border-primary) 88%, transparent);

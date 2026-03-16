@@ -12,12 +12,6 @@
         <div class="header">
             <h1>Studio Equipment Manager</h1>
             <p>Studio equipment tracking and session management</p>
-            <div class="theme-switcher">
-                <span class="theme-label">Theme</span>
-                <button class="theme-btn active" data-theme="dusk" title="Studio Dusk" onclick="changeTheme('dusk')"><span class="theme-swatch"></span>Dusk</button>
-                <button class="theme-btn" data-theme="vintage" title="Console Seafoam" onclick="changeTheme('vintage')"><span class="theme-swatch"></span>Vintage</button>
-                <button class="theme-btn" data-theme="light" title="Minimalist" onclick="changeTheme('light')"><span class="theme-swatch"></span>Light</button>
-            </div>
         </div>
 
         <div class="top-action-region">
@@ -374,22 +368,22 @@
         </div>
         <div id="preferences" class="tab-content">
             <div class="template-grid" style="display:grid;">
-                <div class="panel-box pref-section" id="prefSourceSuggestionsSection" style="background: var(--bg-tertiary); padding: 16px; border-radius: 10px; border: 1px solid var(--border-primary);">
+                <div class="panel-box pref-section pref-panel" id="prefSourceSuggestionsSection">
                     <button class="pref-section-header" type="button" onclick="togglePreferencesSection(this)">
-                        <h3 style="color:var(--accent-primary);">Source Suggestions</h3>
+                        <h3>Source Suggestions</h3>
                         <span class="pref-section-toggle">Show</span>
                     </button>
                     <div class="pref-section-body">
-                        <p style="margin:0 0 10px; color:var(--text-secondary);">One suggestion per line for Source autocomplete.</p>
-                        <div style="display:flex; justify-content:flex-end; margin-bottom:8px;">
+                        <p class="pref-help-copy">One suggestion per line for Source autocomplete.</p>
+                        <div class="pref-action-row-end">
                             <button class="btn-muted" type="button" onclick="copySourceSuggestions()">Copy List</button>
                         </div>
                         <textarea id="prefSourceSuggestions" oninput="autoSizeSourceSuggestionsTextarea()" style="width:100%; min-height:220px; resize:none; overflow-y:auto;"></textarea>
                     </div>
                 </div>
-                <div class="panel-box pref-section" id="prefAutoPairSection" style="background: var(--bg-tertiary); padding: 16px; border-radius: 10px; border: 1px solid var(--border-primary);">
+                <div class="panel-box pref-section pref-panel" id="prefAutoPairSection">
                     <button class="pref-section-header" type="button" onclick="togglePreferencesSection(this)">
-                        <h3 style="color:var(--accent-primary);">Source Auto-Pair Rules</h3>
+                        <h3>Source Auto-Pair Rules</h3>
                         <span class="pref-section-toggle">Show</span>
                     </button>
                     <div class="pref-section-body">
@@ -403,31 +397,31 @@
                                 Only fill when next row source is empty
                             </label>
                         </div>
-                        <div style="margin-bottom:8px; color:var(--text-secondary); font-size:12px;">Exact pairs (drag or Arrow keys to reorder)</div>
-                        <div id="prefExactPairsList" style="display:flex; flex-direction:column; gap:6px;"></div>
+                        <div class="pref-subhead">Exact pairs (drag or Arrow keys to reorder)</div>
+                        <div id="prefExactPairsList" class="pref-list-stack"></div>
                         <button class="btn-muted" type="button" style="margin:8px 0 12px;" onclick="addPreferencePairRow('exact')">+ Add exact pair</button>
-                        <div style="margin-bottom:8px; color:var(--text-secondary); font-size:12px;">Suffix pairs (drag or Arrow keys to reorder)</div>
-                        <div id="prefSuffixPairsList" style="display:flex; flex-direction:column; gap:6px;"></div>
+                        <div class="pref-subhead">Suffix pairs (drag or Arrow keys to reorder)</div>
+                        <div id="prefSuffixPairsList" class="pref-list-stack"></div>
                         <button class="btn-muted" type="button" style="margin-top:8px;" onclick="addPreferencePairRow('suffix')">+ Add suffix pair</button>
                     </div>
                 </div>
-                <div class="panel-box pref-section" id="prefNormallingSection" style="background: var(--bg-tertiary); padding: 16px; border-radius: 10px; border: 1px solid var(--border-primary);">
+                <div class="panel-box pref-section pref-panel" id="prefNormallingSection">
                     <button class="pref-section-header" type="button" onclick="togglePreferencesSection(this)">
-                        <h3 style="color:var(--accent-primary);">Studio Hard Normals</h3>
+                        <h3>Studio Hard Normals</h3>
                         <span class="pref-section-toggle">Show</span>
                     </button>
                     <div class="pref-section-body">
-                        <p style="margin:0 0 10px; color:var(--text-secondary);">Map a Tie Line to a specific Preamp and A/D Converter. Selecting the Tie Line on the board will automatically patch these.</p>
-                        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr auto; gap:6px; margin-bottom:6px; font-size:11px; color:var(--text-secondary); padding-left:2px;">
+                        <p class="pref-help-copy">Map a Tie Line to a specific Preamp and A/D Converter. Selecting the Tie Line on the board will automatically patch these.</p>
+                        <div class="pref-normal-header-grid">
                             <div>Tie Line</div><div>Preamp</div><div>A/D Converter</div><div></div>
                         </div>
-                        <div id="prefNormalsList" style="display:flex; flex-direction:column; gap:6px;"></div>
+                        <div id="prefNormalsList" class="pref-list-stack"></div>
                         <button class="btn-muted" type="button" style="margin-top:8px;" onclick="addPreferenceNormalRow()">+ Add Normal Route</button>
                     </div>
                 </div>
-                <div class="panel-box pref-section" id="prefDawExportSection" style="background: var(--bg-tertiary); padding: 16px; border-radius: 10px; border: 1px solid var(--border-primary);">
+                <div class="panel-box pref-section pref-panel" id="prefDawExportSection">
                     <button class="pref-section-header" type="button" onclick="togglePreferencesSection(this)">
-                        <h3 style="color:var(--accent-primary);">DAW Export Settings</h3>
+                        <h3>DAW Export Settings</h3>
                         <span class="pref-section-toggle">Show</span>
                     </button>
                     <div class="pref-section-body">
@@ -441,33 +435,74 @@
                         </label>
                     </div>
                 </div>
-            </div>
-            <div class="panel-box pref-section" style="background: var(--bg-tertiary); padding: 16px; border-radius: 10px; border: 1px solid var(--border-primary); margin-top: 18px;">
-                <button class="pref-section-header" type="button" onclick="togglePreferencesSection(this)">
-                    <h3 style="color:var(--accent-primary);">Auto Colour Groups</h3>
-                    <span class="pref-section-toggle">Show</span>
-                </button>
-                <div class="pref-section-body">
-                    <p style="margin:0 0 10px; color:var(--text-secondary);">Set colour, keywords, and order for automatic row colouring.</p>
-                    <div id="prefColourGroupsList" style="display:flex; flex-direction:column; gap:6px; margin-bottom:8px;"></div>
-                    <button class="btn-muted" type="button" onclick="addPreferenceColourGroup()">+ Add colour group</button>
-                    <div style="margin-top:10px; border-top:1px solid var(--border-primary); padding-top:10px;">
-                        <label style="display:block; margin-bottom:6px; color:var(--text-secondary); font-size:12px;">Test source match</label>
-                        <input id="prefColourTestInput" type="text" placeholder="Type a source name (e.g. Crash L)" oninput="renderAutoColourDiagnostics()" style="width:100%; margin-bottom:8px;">
-                        <div id="prefColourTestResult" style="font-size:12px; color:var(--text-secondary); margin-bottom:8px;">No test source entered.</div>
-                        <div style="color:var(--text-secondary); font-size:12px; margin-bottom:4px;">Keyword conflicts</div>
-                        <div id="prefColourConflictList" style="display:flex; flex-direction:column; gap:4px; font-size:11px; color:var(--text-secondary);"></div>
+                <div class="panel-box pref-section pref-panel" id="prefThemeSection">
+                    <button class="pref-section-header" type="button" onclick="togglePreferencesSection(this)">
+                        <h3>App Themes & Colors</h3>
+                        <span class="pref-section-toggle">Show</span>
+                    </button>
+                    <div class="pref-section-body">
+                        <div class="theme-switcher">
+                            <span class="theme-label">Theme</span>
+                            <button class="theme-btn active" data-theme="dusk" title="Studio Dusk" onclick="changeTheme('dusk')"><span class="theme-swatch"></span>Dusk</button>
+                            <button class="theme-btn" data-theme="vintage" title="Console Seafoam" onclick="changeTheme('vintage')"><span class="theme-swatch"></span>Vintage</button>
+                            <button class="theme-btn" data-theme="light" title="Minimalist" onclick="changeTheme('light')"><span class="theme-swatch"></span>Light</button>
+                            <button class="theme-btn" data-theme="custom" title="Custom Theme" onclick="changeTheme('custom')"><span class="theme-swatch" style="background: conic-gradient(red, yellow, green, blue, magenta, red);"></span>Custom</button>
+                            <button class="theme-btn theme-preset-btn" type="button" title="Apply User Preset A" onclick="applyCustomThemePreset('a')"><span class="theme-swatch" style="background: linear-gradient(45deg, #0d1115, #d92525);"></span>User A</button>
+                            <button class="theme-btn theme-preset-btn" type="button" title="Apply User Preset B" onclick="applyCustomThemePreset('b')"><span class="theme-swatch" style="background: linear-gradient(45deg, #050505, #ffd700);"></span>User B</button>
+                        </div>
+                        <div id="customThemeBuilder" style="display:none;">
+                            <div class="pref-theme-builder-grid">
+                                <label class="pref-theme-color-label">
+                                    Background
+                                    <input id="customBg" type="color" oninput="applyCustomThemeColors()">
+                                </label>
+                                <label class="pref-theme-color-label">
+                                    Panels
+                                    <input id="customPanels" type="color" oninput="applyCustomThemeColors()">
+                                </label>
+                                <label class="pref-theme-color-label">
+                                    Text
+                                    <input id="customText" type="color" oninput="applyCustomThemeColors()">
+                                </label>
+                                <label class="pref-theme-color-label">
+                                    Accent
+                                    <input id="customAccent" type="color" oninput="applyCustomThemeColors()">
+                                </label>
+                            </div>
+                            <div class="pref-theme-actions">
+                                <button class="btn-muted" type="button" onclick="saveCustomThemePreset('a')">Save to User A</button>
+                                <button class="btn-muted" type="button" onclick="saveCustomThemePreset('b')">Save to User B</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="panel-box pref-section" style="background: var(--bg-tertiary); padding: 16px; border-radius: 10px; border: 1px solid var(--border-primary); margin-top: 18px;">
+            <div class="panel-box pref-section pref-panel pref-panel-spaced">
                 <button class="pref-section-header" type="button" onclick="togglePreferencesSection(this)">
-                    <h3 style="color:var(--accent-primary);">Preferences Backup</h3>
+                    <h3>Auto Colour Groups</h3>
                     <span class="pref-section-toggle">Show</span>
                 </button>
                 <div class="pref-section-body">
-                    <p style="margin:0 0 10px; color:var(--text-secondary);">Save and restore your autocomplete and pairing rules.</p>
-                    <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                    <p class="pref-help-copy">Set colour, keywords, and order for automatic row colouring.</p>
+                    <div id="prefColourGroupsList" style="display:flex; flex-direction:column; gap:6px; margin-bottom:8px;"></div>
+                    <button class="btn-muted" type="button" onclick="addPreferenceColourGroup()">+ Add colour group</button>
+                    <div class="pref-divider-block">
+                        <label class="pref-label-compact">Test source match</label>
+                        <input id="prefColourTestInput" type="text" placeholder="Type a source name (e.g. Crash L)" oninput="renderAutoColourDiagnostics()" style="width:100%; margin-bottom:8px;">
+                        <div id="prefColourTestResult" class="pref-note-md">No test source entered.</div>
+                        <div class="pref-note-sm">Keyword conflicts</div>
+                        <div id="prefColourConflictList" class="pref-note-xs"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-box pref-section pref-panel pref-panel-spaced">
+                <button class="pref-section-header" type="button" onclick="togglePreferencesSection(this)">
+                    <h3>Preferences Backup</h3>
+                    <span class="pref-section-toggle">Show</span>
+                </button>
+                <div class="pref-section-body">
+                    <p class="pref-help-copy">Save and restore your autocomplete and pairing rules.</p>
+                    <div class="pref-action-row-wrap">
                         <button class="btn-muted" type="button" onclick="savePreferencesFromUI()">Save Preferences</button>
                         <button class="btn-muted" type="button" onclick="resetPreferencesToDefault()">Reset to Defaults</button>
                         <button class="btn-muted" type="button" onclick="exportPreferences()">Export Preferences</button>

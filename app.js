@@ -101,6 +101,26 @@ function getDefaultPreferences() {
             mergeStereo: true,
             useShortNames: false
         },
+        customTheme: {
+            bg: '#0f0f0f',
+            panels: '#1a1a1a',
+            text: '#eeeeee',
+            accent: '#FF9F1C'
+        },
+        customThemePresets: {
+            a: {
+                bg: '#0d1115',
+                panels: '#161a1f',
+                text: '#e8e9ea',
+                accent: '#d92525'
+            },
+            b: {
+                bg: '#050505',
+                panels: '#141414',
+                text: '#f4f4f4',
+                accent: '#ffd700'
+            }
+        },
         autoColour: {
             groups: clonePreferences(DEFAULT_AUTO_COLOUR_GROUPS)
         }
@@ -161,8 +181,53 @@ function normalizePreferences(input) {
         mergeStereo: daw.mergeStereo !== false,
         useShortNames: daw.useShortNames === true
     };
+    const customTheme = input.customTheme || {};
+    merged.customTheme = {
+        bg: normalizeHexColor(customTheme.bg, base.customTheme.bg),
+        panels: normalizeHexColor(customTheme.panels, base.customTheme.panels),
+        text: normalizeHexColor(customTheme.text, base.customTheme.text),
+        accent: normalizeHexColor(customTheme.accent, base.customTheme.accent)
+    };
+    const presets = input.customThemePresets || {};
+    merged.customThemePresets = {
+        a: normalizeCustomThemePalette(presets.a, base.customThemePresets.a),
+        b: normalizeCustomThemePalette(presets.b, base.customThemePresets.b)
+    };
     merged.autoColour.groups = normalizeAutoColourGroups(input.autoColour?.groups);
     return merged;
+}
+function normalizeHexColor(value, fallback) {
+    const raw = `${value || ''}`.trim();
+    if (/^#[0-9a-fA-F]{6}$/.test(raw)) return raw;
+    return fallback;
+}
+function normalizeCustomThemePalette(palette, fallback) {
+    const safeFallback = fallback || {
+        bg: '#0f0f0f',
+        panels: '#1a1a1a',
+        text: '#eeeeee',
+        accent: '#FF9F1C'
+    };
+    return {
+        bg: normalizeHexColor(palette?.bg, safeFallback.bg),
+        panels: normalizeHexColor(palette?.panels, safeFallback.panels),
+        text: normalizeHexColor(palette?.text, safeFallback.text),
+        accent: normalizeHexColor(palette?.accent, safeFallback.accent)
+    };
+}
+function getCustomThemeFromInputs() {
+    const prefs = normalizePreferences(window.preferences);
+    const custom = prefs.customTheme || {};
+    const bgInput = document.getElementById('customBg');
+    const panelsInput = document.getElementById('customPanels');
+    const textInput = document.getElementById('customText');
+    const accentInput = document.getElementById('customAccent');
+    return {
+        bg: normalizeHexColor(bgInput?.value, custom.bg || '#0f0f0f'),
+        panels: normalizeHexColor(panelsInput?.value, custom.panels || '#1a1a1a'),
+        text: normalizeHexColor(textInput?.value, custom.text || '#eeeeee'),
+        accent: normalizeHexColor(accentInput?.value, custom.accent || '#FF9F1C')
+    };
 }
 function normalizeHardNormals(items) {
     if (!Array.isArray(items)) return [];
@@ -1698,11 +1763,19 @@ function renderPreferencesUI() {
     const onlyWhenNextEmpty = document.getElementById('prefOnlyWhenNextEmpty');
     const dawMergeStereo = document.getElementById('prefDawMergeStereo');
     const dawUseShortNames = document.getElementById('prefDawUseShortNames');
+    const customBg = document.getElementById('customBg');
+    const customPanels = document.getElementById('customPanels');
+    const customText = document.getElementById('customText');
+    const customAccent = document.getElementById('customAccent');
     if (sourceBox) sourceBox.value = prefs.sourceSuggestions.join('\n');
     if (autoPairEnabled) autoPairEnabled.checked = prefs.sourceAutoPair.enabled !== false;
     if (onlyWhenNextEmpty) onlyWhenNextEmpty.checked = prefs.sourceAutoPair.onlyWhenNextRowEmpty !== false;
     if (dawMergeStereo) dawMergeStereo.checked = prefs.dawNamer?.mergeStereo !== false;
     if (dawUseShortNames) dawUseShortNames.checked = prefs.dawNamer?.useShortNames === true;
+    if (customBg) customBg.value = prefs.customTheme?.bg || '#0f0f0f';
+    if (customPanels) customPanels.value = prefs.customTheme?.panels || '#1a1a1a';
+    if (customText) customText.value = prefs.customTheme?.text || '#eeeeee';
+    if (customAccent) customAccent.value = prefs.customTheme?.accent || '#FF9F1C';
     renderPreferencePairs('exact', prefs.sourceAutoPair.exactPairs);
     renderPreferencePairs('suffix', prefs.sourceAutoPair.suffixPairs);
     renderPreferenceNormals();
@@ -1711,6 +1784,9 @@ function renderPreferencesUI() {
     renderAutoColourDiagnostics(prefs.autoColour?.groups || []);
     renderSourceSuggestionsDatalist();
     setTimeout(autoSizeSourceSuggestionsTextarea, 0);
+    if (document.documentElement.getAttribute('data-theme') === 'custom') {
+        applyCustomThemeColors();
+    }
     setPreferencesDirtyState(false);
 }
 window.togglePreferencesSection = function(btn) {
@@ -1737,6 +1813,10 @@ function buildPreferencesDraftFromUI() {
     const onlyWhenNextEmpty = document.getElementById('prefOnlyWhenNextEmpty');
     const dawMergeStereo = document.getElementById('prefDawMergeStereo');
     const dawUseShortNames = document.getElementById('prefDawUseShortNames');
+    const customBg = document.getElementById('customBg');
+    const customPanels = document.getElementById('customPanels');
+    const customText = document.getElementById('customText');
+    const customAccent = document.getElementById('customAccent');
     const sourceSuggestions = `${sourceBox?.value || ''}`
         .split('\n')
         .map(v => v.trim())
@@ -1753,6 +1833,12 @@ function buildPreferencesDraftFromUI() {
         dawNamer: {
             mergeStereo: dawMergeStereo?.checked !== false,
             useShortNames: !!dawUseShortNames?.checked
+        },
+        customTheme: {
+            bg: `${customBg?.value || ''}`.trim() || '#0f0f0f',
+            panels: `${customPanels?.value || ''}`.trim() || '#1a1a1a',
+            text: `${customText?.value || ''}`.trim() || '#eeeeee',
+            accent: `${customAccent?.value || ''}`.trim() || '#FF9F1C'
         },
         autoColour: {
             groups: readPreferenceColourGroups()
@@ -3631,11 +3717,92 @@ function updateInventoryCounts() {
 }
 
 // THEME INIT
+function applyCustomThemeColors(preferSaved = false) {
+    const prefs = normalizePreferences(window.preferences);
+    const custom = prefs.customTheme || {};
+    const bgInput = document.getElementById('customBg');
+    const panelsInput = document.getElementById('customPanels');
+    const textInput = document.getElementById('customText');
+    const accentInput = document.getElementById('customAccent');
+    const nextPalette = preferSaved
+        ? normalizeCustomThemePalette(custom, {
+            bg: '#0f0f0f',
+            panels: '#1a1a1a',
+            text: '#eeeeee',
+            accent: '#FF9F1C'
+        })
+        : getCustomThemeFromInputs();
+    const bg = nextPalette.bg;
+    const panels = nextPalette.panels;
+    const text = nextPalette.text;
+    const accent = nextPalette.accent;
+    if (bgInput) bgInput.value = bg;
+    if (panelsInput) panelsInput.value = panels;
+    if (textInput) textInput.value = text;
+    if (accentInput) accentInput.value = accent;
+    window.preferences = normalizePreferences({
+        ...prefs,
+        customTheme: nextPalette
+    });
+    const rootStyle = document.documentElement.style;
+    rootStyle.setProperty('--bg-primary', bg);
+    rootStyle.setProperty('--bg-secondary', panels);
+    rootStyle.setProperty('--bg-table', panels);
+    rootStyle.setProperty('--text-primary', text);
+    rootStyle.setProperty('--accent-primary', accent);
+    updatePreferencesDirtyState();
+}
+function saveCustomThemePreset(slot) {
+    if (slot !== 'a' && slot !== 'b') return;
+    const prefs = normalizePreferences(window.preferences);
+    const palette = getCustomThemeFromInputs();
+    window.preferences = normalizePreferences({
+        ...prefs,
+        customTheme: palette,
+        customThemePresets: {
+            ...prefs.customThemePresets,
+            [slot]: palette
+        }
+    });
+    updatePreferencesDirtyState();
+    alert(`Saved current custom colours to User ${slot.toUpperCase()}.`);
+}
+function applyCustomThemePreset(slot) {
+    if (slot !== 'a' && slot !== 'b') return;
+    const prefs = normalizePreferences(window.preferences);
+    const palette = normalizeCustomThemePalette(prefs.customThemePresets?.[slot], prefs.customTheme);
+    const bgInput = document.getElementById('customBg');
+    const panelsInput = document.getElementById('customPanels');
+    const textInput = document.getElementById('customText');
+    const accentInput = document.getElementById('customAccent');
+    if (bgInput) bgInput.value = palette.bg;
+    if (panelsInput) panelsInput.value = palette.panels;
+    if (textInput) textInput.value = palette.text;
+    if (accentInput) accentInput.value = palette.accent;
+    window.preferences = normalizePreferences({
+        ...prefs,
+        customTheme: palette
+    });
+    changeTheme('custom');
+}
 function changeTheme(theme) { 
     document.documentElement.setAttribute('data-theme', theme); 
     document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active')); 
     const activeBtn = document.querySelector(`.theme-btn[data-theme="${theme}"]`);
-    if(activeBtn) activeBtn.classList.add('active'); 
+    if(activeBtn) activeBtn.classList.add('active');
+    const builder = document.getElementById('customThemeBuilder');
+    const rootStyle = document.documentElement.style;
+    if (theme === 'custom') {
+        if (builder) builder.style.display = 'block';
+        applyCustomThemeColors(true);
+    } else {
+        if (builder) builder.style.display = 'none';
+        rootStyle.removeProperty('--bg-primary');
+        rootStyle.removeProperty('--bg-secondary');
+        rootStyle.removeProperty('--bg-table');
+        rootStyle.removeProperty('--text-primary');
+        rootStyle.removeProperty('--accent-primary');
+    }
     // Save theme preference to local storage
     localStorage.setItem('studioApp_theme', theme);
 }

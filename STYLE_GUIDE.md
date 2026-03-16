@@ -88,6 +88,7 @@ For all Preferences sections:
 
 - Reuse existing classes before adding new styles.
 - If new style is needed, prefer token-based values.
+- Avoid ad-hoc typography in inline styles; use existing typography classes/tokens for font size, weight, and line-height.
 - Keep per-tab overrides minimal and aligned:
   - `#presets`
   - `#inventory`

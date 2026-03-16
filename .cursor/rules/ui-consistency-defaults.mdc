@@ -1,0 +1,23 @@
+---
+description: Enforce existing project UI typography and style tokens
+alwaysApply: true
+---
+
+# UI Consistency Defaults
+
+Follow existing project UI patterns before introducing new styles.
+
+- Use typography tokens and inherited sizing/weights:
+  - body: `var(--ui-weight)`
+  - emphasis/headings: `var(--ui-weight-strong)`
+- Match nearby control density (font sizes, spacing, border radii) in the same tab/section.
+- Prefer existing classes (`btn-muted`, preference row patterns, panel styles) over creating one-off variants.
+- Avoid inline typography styles (`font-size`, `font-weight`, `line-height`) unless there is a documented one-off reason.
+- Use CSS variables for colors and borders; avoid hardcoded values unless explicitly required.
+- Keep UI compact and subtle per `STYLE_GUIDE.md`.
+
+Before shipping UI edits:
+
+1. Compare new controls against neighboring controls in the same panel.
+2. Confirm text sizing and weight match existing section conventions.
+3. Confirm accent usage indicates state, not decoration.

@@ -41,9 +41,19 @@ For best file import/export behavior, use a modern Chromium-based browser.
 
 Session state and preferences are saved in browser local storage.
 
+## UI Cleanup Checklist
+
+Use this before shipping UI changes:
+
+- Reuse existing classes and tokens before adding new styles.
+- Avoid inline typography (`font-size`, `font-weight`, `line-height`) in markup.
+- Match surrounding control density (spacing, radius, button sizing) in the same panel/tab.
+- Use accent color for state/meaning, not decoration.
+- Verify new controls align with `STYLE_GUIDE.md` typography and preference patterns.
+
 ## Git Branch
 
-Current working branch for this snapshot:
+Current working branch:
 
-- `snapshot-before-dropdown`
+- `main`
 
