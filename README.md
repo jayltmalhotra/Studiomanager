@@ -51,6 +51,15 @@ Use this before shipping UI changes:
 - Use accent color for state/meaning, not decoration.
 - Verify new controls align with `STYLE_GUIDE.md` typography and preference patterns.
 
+## Recent Updates
+
+- Moved theme switching into the Preferences tab and removed the header theme control.
+- Added `App Themes & Colors` with built-in themes, a custom theme builder, and live preview.
+- Added DAW export preferences for stereo merge and short-name track formatting.
+- Added `User A` and `User B` custom theme presets with save/apply workflows.
+- Refactored Preferences UI styling to reduce repeated inline styles and improve consistency.
+- Added a persistent Cursor rule at `.cursor/rules/ui-consistency-defaults.mdc` for token/class-first UI edits.
+
 ## Git Branch
 
 Current working branch:
