@@ -274,6 +274,20 @@
                 <div id="eqListModalRows"></div>
             </div>
         </div>
+        <div id="dawExportModal" class="modal" onclick="closeDawExportModal(event)">
+            <div class="modal-content" style="width:min(700px, calc(100vw - 48px)); max-height: 82vh; overflow:auto;" onclick="event.stopPropagation()">
+                <div class="modal-header">
+                    <h3 style="color:var(--accent-primary); margin:0;">DAW Export Helper</h3>
+                    <button class="btn-muted" type="button" onclick="closeDawExportModal()">×</button>
+                </div>
+                <p class="daw-export-help">Create tracks in this exact order (sequential Mono/Stereo blocks), then paste the track names below.</p>
+                <div id="dawExportCounts" class="daw-export-counts"></div>
+                <textarea id="dawExportList" class="daw-export-list" readonly></textarea>
+                <div style="display:flex; justify-content:flex-end; margin-top:10px;">
+                    <button class="btn-muted" type="button" onclick="closeDawExportModal()">Close</button>
+                </div>
+            </div>
+        </div>
         <div id="inventory" class="tab-content">
             <div class="inventory-setup-strip">
                 <span class="inventory-setup-label">Inventory Setup</span>
@@ -388,9 +402,9 @@
                         </label>
                     </div>
                 </div>
-                <div class="panel-box pref-section pref-panel" id="prefPdfExportSection" style="background: var(--bg-tertiary); padding: 16px; border-radius: 10px; border: 1px solid var(--border-primary); margin-top: 18px;">
+                <div class="panel-box pref-section pref-panel pref-panel-spaced" id="prefPdfExportSection">
                     <button class="pref-section-header" type="button" onclick="togglePreferencesSection(this)">
-                        <h3 style="color:var(--accent-primary);">PDF Export Settings</h3>
+                        <h3>PDF Export Settings</h3>
                         <span class="pref-section-toggle">Show</span>
                     </button>
                     <div class="pref-section-body">

@@ -309,6 +309,14 @@ let suppressClearClick = false;
 let clearModeHandlersBound = false;
 let clearModeIdleTimer = null;
 
+window.refreshAppUI = function(skipSessionTable = false) {
+    if (!skipSessionTable) updateSessionTable();
+    updateEquipmentTables();
+    updateSummary();
+    if (typeof updateInventoryCounts === 'function') updateInventoryCounts();
+    autoSave();
+};
+
 function snapshotState() {
     return {
         equipment: JSON.parse(JSON.stringify(equipment)),
@@ -340,12 +348,8 @@ function applyHistoryState(state) {
     sessionData = JSON.parse(JSON.stringify(state.sessionData));
     customTemplates = JSON.parse(JSON.stringify(state.customTemplates));
     window.manualRowColors = JSON.parse(JSON.stringify(state.manualRowColors || {}));
-    updateSessionTable();
-    updateEquipmentTables();
-    updateSummary();
+    refreshAppUI();
     updateTemplateUI();
-    if (typeof updateInventoryCounts === 'function') updateInventoryCounts();
-    autoSave();
     window.isApplyingHistory = false;
     updateHistoryButtons();
 }
@@ -746,9 +750,9 @@ function updateSessionTable() {
             <td class="col-channel" data-label="Channel">
                 <div class="row-hover-zone row-hover-zone-delete no-print"></div>
                 <div class="row-hover-zone row-hover-zone-insert no-print"></div>
-                <button class="row-action-btn row-action-btn-delete no-print" onclick="deleteSessionRow(${index})" title="Delete this row">-</button>
-                <button class="row-action-btn row-action-btn-insert no-print" onclick="insertSessionRow(${index})" title="Insert row below">+</button>
-                <button class="channel-reorder-handle no-print" type="button" title="Drag to reorder" draggable="true" data-index="${index}">⋮⋮</button>
+                <button class="row-action-btn row-action-btn-delete no-print" onclick="deleteSessionRow(${index})" title="Delete this row" aria-label="Delete row">-</button>
+                <button class="row-action-btn row-action-btn-insert no-print" onclick="insertSessionRow(${index})" title="Insert row below" aria-label="Insert row below">+</button>
+                <button class="channel-reorder-handle no-print" type="button" title="Drag to reorder" draggable="true" data-index="${index}" tabindex="0">⋮⋮</button>
                 <div class="channel-number" data-channel="${session.channel}" data-index="${index}">${session.channel}</div>
                 <div class="mobile-reorder-btns">
                     <button class="mobile-reorder-btn" onclick="reorderSessionRows(${index}, ${index - 1})" ${index === 0 ? 'disabled style="opacity:0.3;"' : ''}>↑</button>
@@ -1332,8 +1336,8 @@ function updateSessionData(index, field, value) {
             }
         }
         updateSessionSummary();
-        if (!autoFillStartIndex) { updateEquipmentTables(); updateSummary(); }
-        autoSave();
+        if (!autoFillStartIndex) refreshAppUI(true);
+        else autoSave();
         return;
     }
 
@@ -1368,11 +1372,12 @@ function updateSessionData(index, field, value) {
     updateSessionSummary();
     
     if (!autoFillStartIndex) {
-        updateEquipmentTables();
-        updateSummary();
+        refreshAppUI(true);
         refreshAllDropdowns(field); // THE FIX
+        autoSave();
+    } else {
+        autoSave();
     }
-    autoSave();
 }
 
 function clearPrev(val, field) {
@@ -1509,9 +1514,7 @@ function handleDropFill(e) {
     updateUnitStatus('preampUnits');
     updateUnitStatus('adUnits');
     updateUnitStatus('tieLines');
-    updateEquipmentTables();
-    updateSummary();
-    autoSave();
+    refreshAppUI(true);
 }
 
 function checkChannelAvailable(columnType, name) {
@@ -2309,10 +2312,7 @@ function clearColumn(col) {
     if (window.isSessionLocked) return;
     pushHistory();
     sessionData.forEach((s) => { if (s[col]) { clearPrev(s[col], col); s[col] = ''; } });
-    updateSessionTable();
-    updateEquipmentTables();
-    updateSummary();
-    autoSave();
+    refreshAppUI();
 }
 window.toggleColumnPin = function(col) {
     window.pinnedColumns[col] = !window.pinnedColumns[col];
@@ -2329,10 +2329,7 @@ function clearRow(index) {
     updateUnitStatus('preampUnits');
     updateUnitStatus('adUnits');
     updateUnitStatus('tieLines');
-    updateSessionTable();
-    updateEquipmentTables();
-    updateSummary();
-    autoSave();
+    refreshAppUI();
 }
 
 function clearRowFields(index) {
@@ -2356,10 +2353,7 @@ function clearRowRange(startIdx, endIdx) {
     updateUnitStatus('preampUnits');
     updateUnitStatus('adUnits');
     updateUnitStatus('tieLines');
-    updateSessionTable();
-    updateEquipmentTables();
-    updateSummary();
-    autoSave();
+    refreshAppUI();
 }
 
 function clearSessionBoard() {
@@ -2419,10 +2413,7 @@ window.deleteSessionRow = function(index) {
         if (locks.outboard3) s.outboard3 = lockedData[i].outboard3;
         if (locks.ad) s.ad = lockedData[i].ad;
     });
-    updateSessionTable();
-    updateEquipmentTables();
-    updateSummary();
-    autoSave();
+    refreshAppUI();
 };
 
 function updateSessionSummary() {
@@ -2443,8 +2434,7 @@ function showTab(tabName) {
     document.getElementById(tabName).classList.add('active');
     event.target.classList.add('active');
     if(tabName === 'inventory') {
-        updateEquipmentTables();
-        updateSummary();
+        refreshAppUI(true);
     } else if (tabName === 'presets') {
         populateTemplateChannelSelects();
         applyTemplateFieldDefaultsFromSession();
@@ -3023,6 +3013,11 @@ function closeTemplatePreview(event) {
     const modal = document.getElementById('templatePreviewModal');
     if (modal) modal.style.display = 'none';
 }
+function closeDawExportModal(event) {
+    if (event && event.target && event.target.id !== 'dawExportModal') return;
+    const modal = document.getElementById('dawExportModal');
+    if (modal) modal.style.display = 'none';
+}
 
 function deleteTemplate(idx) {
     if (confirm("Delete this template?")) {
@@ -3568,11 +3563,7 @@ function importCSVInventory(event) {
         pushHistory();
         equipment = ensureEquipmentDefaults(newEquipment);
         initializeSession(sessionData.length || 24);
-        updateSessionTable();
-        updateEquipmentTables();
-        updateSummary();
-        updateInventoryCounts();
-        if (typeof autoSave === 'function') autoSave(); // Save to local storage
+        refreshAppUI();
         
         alert(`Success! Imported ${rows.length - 1} pieces of gear.`);
         event.target.value = ''; 
@@ -3632,15 +3623,9 @@ function importData(e) {
         updateColourControls(false);
         renderPreferencesUI();
         loadMetadataUI();
-        updateSessionTable();
-        updateEquipmentTables();
-        updateSummary();
+        refreshAppUI();
         updateTemplateUI();
-        if (typeof updateInventoryCounts === 'function') {
-            updateInventoryCounts();
-        }
         alert('Data imported!');
-        autoSave();
     };
     reader.readAsText(file);
 }
@@ -3682,15 +3667,17 @@ function getDawExportTracks() {
     const mergeStereo = prefs.dawNamer?.mergeStereo !== false;
     const useShortNames = prefs.dawNamer?.useShortNames === true;
     const shortNameMap = [
-        ['Overhead', 'OH'],
+['Overhead', 'OH'],
         ['Snare', 'Snr'],
-        ['Bottom', 'Btm'],
+['Bottom', 'Btm'],
         ['Acoustic', 'Acc'],
         ['Room', 'Rm']
     ];
+    
     let tracks = sessionData
         .filter(s => s.source && s.source.trim() !== '')
         .map(s => s.source.trim());
+        
     if (useShortNames) {
         tracks = tracks.map(name => {
             let out = name;
@@ -3700,26 +3687,52 @@ function getDawExportTracks() {
             return out;
         });
     }
-    const merged = [];
+    const merged =[];
     let monoCount = 0;
     let stereoCount = 0;
+    
+    // Track the sequential blocks for Pro Tools creation
+    const blocks =[];
+    let currentType = null;
+    let currentBlockCount = 0;
+
+    const pushBlock = () => {
+        if (currentType !== null && currentBlockCount > 0) {
+            blocks.push({ type: currentType, count: currentBlockCount });
+        }
+    };
+
     for (let i = 0; i < tracks.length; i++) {
         const current = tracks[i];
+        let isStereo = false;
+
         if (
             mergeStereo &&
             /\sL$/.test(current) &&
             i + 1 < tracks.length &&
             tracks[i + 1] === `${current.slice(0, -2)} R`
         ) {
+            isStereo = true;
             merged.push(current.slice(0, -2));
             stereoCount++;
-            i++;
-            continue;
+            i++; // skip the 'R' track
+        } else {
+            merged.push(current);
+            monoCount++;
         }
-        merged.push(current);
-        monoCount++;
+
+        const typeStr = isStereo ? 'Stereo' : 'Mono';
+        if (typeStr === currentType) {
+            currentBlockCount++;
+        } else {
+            pushBlock();
+            currentType = typeStr;
+            currentBlockCount = 1;
+        }
     }
-    return { tracks: merged, monoCount, stereoCount };
+    pushBlock(); // push the final block
+
+    return { tracks: merged, monoCount, stereoCount, blocks };
 }
 function updateCopyButtonTooltip() {
     const btn = document.getElementById('copyTrackNamesBtn');
@@ -3728,15 +3741,30 @@ function updateCopyButtonTooltip() {
     btn.title = `Copies ${tracks.length} tracks (${monoCount} Mono, ${stereoCount} Stereo)`;
 }
 async function copyTrackNames() {
-    const { tracks } = getDawExportTracks();
+    const { tracks, monoCount, stereoCount, blocks } = getDawExportTracks();
     if (tracks.length === 0) {
         alert('No sources found to copy!');
         return;
     }
     const textToCopy = tracks.join('\n');
+    
+    // Update the Modal UI
+    const countsDiv = document.getElementById('dawExportCounts');
+    const listTextarea = document.getElementById('dawExportList');
+    if (countsDiv) {
+        const blockHtml = blocks.map(b => `<li class="daw-export-block-item">Create <strong>${b.count}</strong> ${b.type} Audio Track${b.count > 1 ? 's' : ''}</li>`).join('');
+        countsDiv.innerHTML = `<ul class="daw-export-block-list">${blockHtml}</ul>
+        <div class="daw-export-summary">Total: ${monoCount} Mono, ${stereoCount} Stereo</div>`;
+    }
+    if (listTextarea) {
+        listTextarea.value = textToCopy;
+    }
+
+    // Copy to clipboard and show modal
     try {
         await navigator.clipboard.writeText(textToCopy);
-        alert(`Success! Copied ${tracks.length} track names to your clipboard.\n\nYou can now paste them directly into your DAW or batch renamer.`);
+        const modal = document.getElementById('dawExportModal');
+        if (modal) modal.style.display = 'block';
     } catch (err) {
         const ta = document.createElement('textarea');
         ta.value = textToCopy;
@@ -3746,7 +3774,8 @@ async function copyTrackNames() {
         ta.select();
         document.execCommand('copy');
         document.body.removeChild(ta);
-        alert(`Success! Copied ${tracks.length} track names to your clipboard.`);
+        const modal = document.getElementById('dawExportModal');
+        if (modal) modal.style.display = 'block';
     }
 }
 
@@ -3964,10 +3993,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderTemplateFieldSelectors();
     populateTemplateChannelSelects();
     loadMetadataUI();
-    updateSessionTable();
-    updateEquipmentTables();
-    updateSummary();
-    updateInventoryCounts();
+    refreshAppUI();
     updateTemplateUI();
     updateHistoryButtons();
     updateClearModeButton();
