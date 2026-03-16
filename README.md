@@ -1,6 +1,6 @@
-# Studio Equipment Manager
+# Studio Equipment Manager Version 1
 
-Studio Equipment Manager is a browser-based patch sheet and inventory workflow tool for recording sessions.
+Studio Equipment Manager Version 1 is a browser-based patch sheet and inventory workflow tool for recording sessions.
 
 It is designed to help you:
 
