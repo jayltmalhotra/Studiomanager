@@ -21,11 +21,12 @@
                     <div id="dataMenu" class="data-menu">
                         <button class="data-menu-item" onclick="exportData(); closeDataMenu();">Export Data</button>
                         <button class="data-menu-item" onclick="document.getElementById('importFile').click(); closeDataMenu();">Import Data</button>
-                        <button class="data-menu-item" onclick="copyDataToClipboard(); closeDataMenu();">Copy Data</button>
                     </div>
                 </div>
                 <input type="file" id="importFile" accept=".json" onchange="importData(event)">
                 <button onclick="exportToPrintable()">Export PDF</button>
+                <button id="copyTrackNamesBtn" onclick="copyTrackNames()" title="Copy a vertical list of sources for your DAW">⎘ Copy Track Names</button>
+                <button class="action-danger" onclick="clearSessionBoard()" title="Clear all row assignments">⊘ Clear Session</button>
                 <button class="action-danger" onclick="resetData()">Reset Default</button>
             </div>
             <div class="quick-status-panel">
@@ -69,30 +70,9 @@
                 </div>
             </div>
             <div class="control-accordions" style="position: relative; margin-bottom: 0; height: 0; overflow: visible;">
-            <div class="panel-box setup-popover" id="channelManagementControls" style="display:none; padding: 10px 14px; position:absolute; right:0; top:0; width:min(760px, calc(100vw - 80px)); z-index:35; box-shadow: 0 10px 28px rgba(0,0,0,0.28);">
-                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
-                    <span class="setup-popover-title">Channel Count</span>
-                    <button class="btn-muted popover-close" onclick="closeAllSetupPanels()">×</button>
-                </div>
-                <div id="channelPanel" class="accordion-body" style="display:none;">
-                    <div style="display:flex; gap: 8px; align-items: center;">
-                        <label style="color: var(--text-secondary);">Add:</label>
-                        <input type="number" id="channelsToAdd" value="1" min="1" max="16" style="width: 60px; border-radius: 6px; text-align: center;">
-                        <button class="btn-muted" onclick="addChannels()">Add Rows</button>
-                    </div>
-                    <div style="display:flex; gap: 8px; align-items: center;">
-                        <label style="color: var(--text-secondary);">Remove:</label>
-                        <input type="number" id="channelsToRemove" value="1" min="1" style="width: 60px; border-radius: 6px; text-align: center;">
-                        <button class="btn-muted" onclick="removeChannels()">Remove Rows</button>
-                    </div>
-                    <div style="flex-grow: 1;"></div>
-                    <button class="btn-style" style="background: transparent; border: 2px solid var(--border-primary); color: var(--text-primary);" onclick="resetToChannels(24)">Reset Board (24 Ch)</button>
-                </div>
-            </div>
-
             <div class="panel-box setup-popover" style="display:none; padding: 10px 14px; position:absolute; right:0; top:0; width:min(760px, calc(100vw - 80px)); z-index:35; box-shadow: 0 10px 28px rgba(0,0,0,0.28);">
                 <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
-                    <span class="setup-popover-title">Show/Hide Columns</span>
+                    <span class="setup-popover-title">◫ View Columns</span>
                     <button class="btn-muted popover-close" onclick="closeAllSetupPanels()">×</button>
                 </div>
                 <div id="columnPanel" class="accordion-body" style="display:none;">
@@ -109,27 +89,9 @@
                     </div>
                 </div>
             </div>
-
-            <div class="panel-box column-locks setup-popover" style="display:none; padding: 10px 14px; position:absolute; right:0; top:0; width:min(760px, calc(100vw - 80px)); z-index:35; box-shadow: 0 10px 28px rgba(0,0,0,0.28);">
-                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
-                    <span class="setup-popover-title">Pin on Drag</span>
-                    <button class="btn-muted popover-close" onclick="closeAllSetupPanels()">×</button>
-                </div>
-                <div id="lockPanel" class="accordion-body" style="display:none;">
-                    <div class="segment-grid">
-                        <input class="segment-input" type="checkbox" id="lock-microphone"><label class="segment-chip" for="lock-microphone">Microphone</label>
-                        <input class="segment-input" type="checkbox" id="lock-tieLine"><label class="segment-chip" for="lock-tieLine">Tie Line</label>
-                        <input class="segment-input" type="checkbox" id="lock-preamp"><label class="segment-chip" for="lock-preamp">Pre Amp</label>
-                        <input class="segment-input" type="checkbox" id="lock-outboard1"><label class="segment-chip" for="lock-outboard1">Outboard 1</label>
-                        <input class="segment-input" type="checkbox" id="lock-outboard2"><label class="segment-chip" for="lock-outboard2">Outboard 2</label>
-                        <input class="segment-input" type="checkbox" id="lock-outboard3"><label class="segment-chip" for="lock-outboard3">Outboard 3</label>
-                        <input class="segment-input" type="checkbox" id="lock-ad" checked><label class="segment-chip" for="lock-ad">A/D Converter</label>
-                    </div>
-                </div>
-            </div>
             <div class="panel-box setup-popover" style="display:none; padding: 10px 14px; position:absolute; right:0; top:0; width:min(760px, calc(100vw - 80px)); z-index:35; box-shadow: 0 10px 28px rgba(0,0,0,0.28);">
                 <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
-                    <span class="setup-popover-title">Colours</span>
+                    <span class="setup-popover-title">◑ Row Colours</span>
                     <button class="btn-muted popover-close" onclick="closeAllSetupPanels()">×</button>
                 </div>
                 <div id="colorPanel" class="accordion-body" style="display:none;">
@@ -163,22 +125,13 @@
             
             <div class="session-table">
                 <div class="session-action-bar">
-                    <button id="undoBtn" class="btn-muted" onclick="undoAction()" title="Undo (Ctrl/Cmd+Z)">Undo</button>
-                    <button id="redoBtn" class="btn-muted" onclick="redoAction()" title="Redo (Ctrl/Cmd+Shift+Z)">Redo</button>
-                    <button id="clearModeBtn" class="btn-muted" onclick="toggleClearMode()" title="Enable click/drag clear mode">Clear Mode: Off</button>
-                    <button id="clearSessionBtn" class="btn-muted" onclick="clearSessionBoard()" title="Clear all row assignments">Clear Session</button>
-                    <button id="copyTrackNamesBtn" class="btn-muted" onclick="copyTrackNames()" title="Copy a vertical list of sources for your DAW">📋 Copy Track Names</button>
-                    <span class="session-action-meta">Channels: <strong id="channelCountBadge">24 Ch</strong></span>
-                    <div id="setupMenuWrap" style="position: relative;">
-                        <button id="setupMenuBtn" class="btn-muted" onclick="toggleSetupMenu(event)" title="Session setup tools">Setup ▾</button>
-                        <div id="setupMenu" style="display:none; position:absolute; right:0; top: calc(100% + 6px); z-index: 30; min-width: 170px; background: var(--bg-secondary); border: 1px solid var(--border-primary); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.25); padding: 6px;">
-                            <button class="btn-muted" onclick="openSetupPanel('channelPanel')" style="margin-bottom:6px;">Channel Count</button>
-                            <button class="btn-muted" onclick="openSetupPanel('columnPanel')" style="margin-bottom:6px;">Show/Hide Columns</button>
-                            <button class="btn-muted" onclick="openSetupPanel('lockPanel')" style="margin-bottom:6px;">Pin on Drag</button>
-                            <button class="btn-muted" onclick="openSetupPanel('colorPanel')" style="margin-bottom:6px;">Colours</button>
-                        </div>
-                    </div>
-                    <button id="sessionLockBtn" class="btn-muted" style="border-color:#28a745; color:#28a745;" onclick="toggleSessionLock()">Edit: Unlocked</button>
+                    <button id="undoBtn" class="btn-muted" onclick="undoAction()" title="Undo">↩ Undo</button>
+                    <button id="redoBtn" class="btn-muted" onclick="redoAction()" title="Redo">↪ Redo</button>
+                    <button id="clearModeBtn" class="btn-muted" onclick="toggleClearMode()" title="Enable click/drag clear mode">✕ Clear Mode: Off</button>
+                    <span class="session-action-meta" style="margin-right: auto; margin-left: 10px;">Channels: <strong id="channelCountBadge">24 Ch</strong></span>
+                    <button class="btn-muted" data-open-setup-panel="columnPanel" onclick="openSetupPanel('columnPanel')">◫ View</button>
+                    <button class="btn-muted" data-open-setup-panel="colorPanel" onclick="openSetupPanel('colorPanel')">◑ Colours</button>
+                    <button id="sessionLockBtn" class="btn-muted" style="margin-left: 10px; border-color: var(--border-secondary);" onclick="toggleSessionLock()">⊘ Safe Mode: Off</button>
                 </div>
                 <datalist id="sourceSuggestions">
                     <option value="Kick In">
@@ -212,12 +165,12 @@
                             <th class="col-channel">Ch</th>
                             <th class="col-source">Source</th>
                             <th class="col-microphone">Microphone</th>
-                            <th class="col-tieLine">Tie Line</th>
-                            <th class="col-preamp">Pre Amp</th>
-                            <th class="col-outboard1 hidden">Outboard 1</th>
-                            <th class="col-outboard2 hidden">Outboard 2</th>
-                            <th class="col-outboard3 hidden">Outboard 3</th>
-                            <th class="col-ad">A/D Converter</th>
+                            <th class="col-tieLine">Tie Line <button class="header-pin-btn" data-col="tieLine" onclick="toggleColumnPin('tieLine')" title="Pin to physical row">⚲</button> <button class="clear-column-btn" onclick="clearColumn('tieLine')">✕</button></th>
+                            <th class="col-preamp">Pre Amp <button class="header-pin-btn" data-col="preamp" onclick="toggleColumnPin('preamp')" title="Pin to physical row">⚲</button> <button class="clear-column-btn" onclick="clearColumn('preamp')">✕</button></th>
+                            <th class="col-outboard1 hidden">Outboard 1 <button class="header-pin-btn" data-col="outboard1" onclick="toggleColumnPin('outboard1')" title="Pin to physical row">⚲</button> <button class="clear-column-btn" onclick="clearColumn('outboard1')">✕</button></th>
+                            <th class="col-outboard2 hidden">Outboard 2 <button class="header-pin-btn" data-col="outboard2" onclick="toggleColumnPin('outboard2')" title="Pin to physical row">⚲</button> <button class="clear-column-btn" onclick="clearColumn('outboard2')">✕</button></th>
+                            <th class="col-outboard3 hidden">Outboard 3 <button class="header-pin-btn" data-col="outboard3" onclick="toggleColumnPin('outboard3')" title="Pin to physical row">⚲</button> <button class="clear-column-btn" onclick="clearColumn('outboard3')">✕</button></th>
+                            <th class="col-ad">A/D Converter <button class="header-pin-btn" data-col="ad" onclick="toggleColumnPin('ad')" title="Pin to physical row">⚲</button> <button class="clear-column-btn" onclick="clearColumn('ad')">✕</button></th>
                             <th class="col-recall">Recall Notes</th>
                             <th class="col-notes">Notes</th>
                         </tr>

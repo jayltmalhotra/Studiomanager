@@ -273,6 +273,14 @@ window.suspendHistory = false;
 const MAX_HISTORY = 30;
 const ENABLE_CUSTOM_MIC_DROPDOWN = true;
 window.isSessionLocked = false;
+window.pinnedColumns = {
+    tieLine: false,
+    preamp: false,
+    outboard1: false,
+    outboard2: false,
+    outboard3: false,
+    ad: true
+};
 window.activeEqModalIndex = null;
 window.activeEqModalField = null;
 window.eqTypeFilters = [];
@@ -522,15 +530,17 @@ window.toggleSessionLock = function() {
     window.isSessionLocked = !window.isSessionLocked;
     const btn = document.getElementById('sessionLockBtn');
     if (window.isSessionLocked) {
-        btn.innerHTML = 'Edit: Locked';
-        btn.style.borderColor = '#dc3545';
-        btn.style.color = '#dc3545';
+        btn.innerHTML = '⊘ Safe Mode: ON';
+        btn.style.background = 'var(--text-primary)';
+        btn.style.color = 'var(--bg-primary)';
+        btn.style.borderColor = 'var(--text-primary)';
     } else {
-        btn.innerHTML = 'Edit: Unlocked';
-        btn.style.borderColor = '#28a745';
-        btn.style.color = '#28a745';
+        btn.innerHTML = '⊘ Safe Mode: Off';
+        btn.style.background = 'transparent';
+        btn.style.color = 'var(--text-secondary)';
+        btn.style.borderColor = 'var(--border-secondary)';
     }
-    updateSessionTable(); // Redraw the table to apply the locked state
+    updateSessionTable(); 
 };
 window.toggleColors = function() {
     window.enableColors = !window.enableColors;
@@ -617,11 +627,13 @@ function resetColourControls() {
 function updateClearModeButton() {
     const btn = document.getElementById('clearModeBtn');
     if (!btn) return;
-    btn.textContent = window.clearMode ? 'Clear Mode: On' : 'Clear Mode: Off';
+    btn.textContent = window.clearMode ? '✕ Clear Mode: On' : '✕ Clear Mode: Off';
     btn.style.color = window.clearMode ? 'var(--accent-primary)' : 'var(--text-primary)';
     btn.style.borderColor = window.clearMode ? 'var(--accent-primary)' : 'var(--border-primary)';
     btn.style.background = window.clearMode ? 'var(--button-bg)' : 'transparent';
     btn.classList.toggle('clear-mode-active', window.clearMode);
+    const table = document.getElementById('sessionTable');
+    if (table) table.classList.toggle('clear-mode-enabled', !!window.clearMode);
 }
 function clearClearModeIdleTimer() {
     if (!clearModeIdleTimer) return;
@@ -686,6 +698,7 @@ function autoSave() {
     const data = JSON.stringify({
         equipment,
         sessionData,
+        pinnedColumns: window.pinnedColumns || {},
         customTemplates,
         manualRowColors: window.manualRowColors || {},
         sessionMeta: window.sessionMeta || {},
@@ -724,7 +737,11 @@ function updateSessionTable() {
         // Note the "data-label" attributes! These trigger the mobile layout headers.
         row.innerHTML = `
             <td class="col-channel" data-label="Channel">
-                <button class="channel-reorder-handle" type="button" title="Drag or use Arrow keys to reorder row" draggable="true" data-index="${index}" onkeydown="handleSessionRowKeyReorder(event)">⋮⋮</button>
+                <div class="row-hover-zone row-hover-zone-delete no-print"></div>
+                <div class="row-hover-zone row-hover-zone-insert no-print"></div>
+                <button class="row-action-btn row-action-btn-delete no-print" onclick="deleteSessionRow(${index})" title="Delete this row">-</button>
+                <button class="row-action-btn row-action-btn-insert no-print" onclick="insertSessionRow(${index})" title="Insert row below">+</button>
+                <button class="channel-reorder-handle no-print" type="button" title="Drag to reorder" draggable="true" data-index="${index}">⋮⋮</button>
                 <div class="channel-number" data-channel="${session.channel}" data-index="${index}">${session.channel}</div>
                 <div class="mobile-reorder-btns">
                     <button class="mobile-reorder-btn" onclick="reorderSessionRows(${index}, ${index - 1})" ${index === 0 ? 'disabled style="opacity:0.3;"' : ''}>↑</button>
@@ -749,6 +766,10 @@ function updateSessionTable() {
     addAutoFillHandlers();
     initClearModeHandlers();
     updateSessionSummary();
+    Object.keys(window.pinnedColumns || {}).forEach(col => {
+        const btn = document.querySelector(`.header-pin-btn[data-col="${col}"]`);
+        if (btn) btn.classList.toggle('is-pinned', !!window.pinnedColumns[col]);
+    });
     if (window.isSessionLocked) {
         document.getElementById('sessionTable').querySelectorAll('input, select').forEach(el => el.disabled = true);
     }
@@ -2281,6 +2302,12 @@ function clearColumn(col) {
     updateSummary();
     autoSave();
 }
+window.toggleColumnPin = function(col) {
+    window.pinnedColumns[col] = !window.pinnedColumns[col];
+    const btn = document.querySelector(`.header-pin-btn[data-col="${col}"]`);
+    if (btn) btn.classList.toggle('is-pinned', window.pinnedColumns[col]);
+    autoSave();
+};
 
 function clearRow(index) {
     if (window.isSessionLocked) return;
@@ -2329,53 +2356,62 @@ function clearSessionBoard() {
     clearRowRange(0, sessionData.length - 1);
 }
 
-function addChannels() {
-    const toAdd = parseInt(document.getElementById('channelsToAdd').value) || 1;
-    const currentCount = sessionData.length;
+window.insertSessionRow = function(index) {
+    if (window.isSessionLocked) return;
     pushHistory();
-    for (let i = 1; i <= toAdd; i++) {
-        sessionData.push({ channel: currentCount + i, source: '', microphone: '', tieLine: '', preamp: '', outboard1: '', outboard2: '', outboard3: '', ad: '', recall: '', notes: '' });
-    }
-    updateSessionTable();
-    autoSave();
-}
-
-function removeChannels() {
-    const toRemove = parseInt(document.getElementById('channelsToRemove').value) || 1;
-    const currentCount = sessionData.length;
-    if (currentCount - toRemove < 1) {
-        alert('Cannot remove all channels. At least 1 must remain.');
-        return;
-    }
-    pushHistory();
-    // Clear equipment usage for channels being removed so gear goes back into inventory
-    for (let i = currentCount - toRemove; i < currentCount; i++) {
-        if (sessionData[i]) {
-            ['microphone', 'tieLine', 'preamp', 'outboard1', 'outboard2', 'outboard3', 'ad'].forEach(field => {
-                if (sessionData[i][field]) clearPreviousSelection(i, field);
-            });
+    const locks = window.pinnedColumns || {};
+    const lockedData = sessionData.map(s => ({ tieLine: s.tieLine, preamp: s.preamp, outboard1: s.outboard1, outboard2: s.outboard2, outboard3: s.outboard3, ad: s.ad }));
+    const newRow = { channel: 0, source: '', microphone: '', tieLine: '', preamp: '', outboard1: '', outboard2: '', outboard3: '', ad: '', recall: '', notes: '' };
+    sessionData.splice(index + 1, 0, newRow);
+    sessionData.forEach((s, i) => {
+        s.channel = i + 1;
+        if (i < lockedData.length) {
+            if (locks.tieLine) s.tieLine = lockedData[i].tieLine;
+            if (locks.preamp) s.preamp = lockedData[i].preamp;
+            if (locks.outboard1) s.outboard1 = lockedData[i].outboard1;
+            if (locks.outboard2) s.outboard2 = lockedData[i].outboard2;
+            if (locks.outboard3) s.outboard3 = lockedData[i].outboard3;
+            if (locks.ad) s.ad = lockedData[i].ad;
+        } else {
+            if (locks.tieLine) s.tieLine = '';
+            if (locks.preamp) s.preamp = '';
+            if (locks.outboard1) s.outboard1 = '';
+            if (locks.outboard2) s.outboard2 = '';
+            if (locks.outboard3) s.outboard3 = '';
+            if (locks.ad) s.ad = '';
         }
-    }
-    sessionData.splice(-toRemove, toRemove);
+    });
     updateSessionTable();
     autoSave();
-}
+};
 
-function resetToChannels(channelCount) {
-    if (confirm(`Reset to ${channelCount} channels? This will clear all current session data.`)) {
-        pushHistory();
-        sessionData.forEach((_, index) => {
-            ['microphone', 'tieLine', 'preamp', 'outboard1', 'outboard2', 'outboard3', 'ad'].forEach(field => {
-                if (sessionData[index][field]) clearPreviousSelection(index, field);
-            });
-        });
-        initializeSession(channelCount);
-        updateSessionTable();
-        updateEquipmentTables();
-        updateSummary();
-        autoSave();
-    }
-}
+window.deleteSessionRow = function(index) {
+    if (window.isSessionLocked) return;
+    if (sessionData.length <= 1) return alert("Cannot delete the last channel.");
+    pushHistory();
+    const locks = window.pinnedColumns || {};
+    const rowToDelete = sessionData[index];
+    const bottomRow = sessionData[sessionData.length - 1];
+    ['tieLine', 'preamp', 'outboard1', 'outboard2', 'outboard3', 'ad'].forEach(field => {
+        if (!locks[field] && rowToDelete[field]) clearPreviousSelection(index, field);
+        if (locks[field] && bottomRow[field]) clearPreviousSelection(sessionData.length - 1, field);
+    });
+    const lockedData = sessionData.map(s => ({ tieLine: s.tieLine, preamp: s.preamp, outboard1: s.outboard1, outboard2: s.outboard2, outboard3: s.outboard3, ad: s.ad }));
+    sessionData.splice(index, 1);
+    sessionData.forEach((s, i) => {
+        s.channel = i + 1;
+        if (locks.tieLine) s.tieLine = lockedData[i].tieLine;
+        if (locks.preamp) s.preamp = lockedData[i].preamp;
+        if (locks.outboard1) s.outboard1 = lockedData[i].outboard1;
+        if (locks.outboard2) s.outboard2 = lockedData[i].outboard2;
+        if (locks.outboard3) s.outboard3 = lockedData[i].outboard3;
+        if (locks.ad) s.ad = lockedData[i].ad;
+    });
+    updateSessionTable();
+    updateEquipmentTables();
+    updateSummary();
+    autoSave();
+};
 
 function updateSessionSummary() {
     document.getElementById('mics-used').textContent = sessionData.filter(s => s.microphone).length;
@@ -2996,18 +3032,9 @@ function reorderSessionRows(fromIndex, toIndex, focusMovedHandle = false) {
     if (!Number.isInteger(fromIndex) || !Number.isInteger(toIndex)) return;
     if (fromIndex === toIndex) return;
     pushHistory();
-    const locks = {
-        microphone: document.getElementById('lock-microphone') ? document.getElementById('lock-microphone').checked : false,
-        tieLine: document.getElementById('lock-tieLine') ? document.getElementById('lock-tieLine').checked : false,
-        preamp: document.getElementById('lock-preamp') ? document.getElementById('lock-preamp').checked : false,
-        outboard1: document.getElementById('lock-outboard1') ? document.getElementById('lock-outboard1').checked : false,
-        outboard2: document.getElementById('lock-outboard2') ? document.getElementById('lock-outboard2').checked : false,
-        outboard3: document.getElementById('lock-outboard3') ? document.getElementById('lock-outboard3').checked : false,
-        ad: document.getElementById('lock-ad') ? document.getElementById('lock-ad').checked : false
-    };
+    const locks = window.pinnedColumns || {};
 
     const lockedData = sessionData.map(s => ({
-        microphone: s.microphone,
         tieLine: s.tieLine, preamp: s.preamp, outboard1: s.outboard1,
         outboard2: s.outboard2, outboard3: s.outboard3, ad: s.ad
     }));
@@ -3017,7 +3044,6 @@ function reorderSessionRows(fromIndex, toIndex, focusMovedHandle = false) {
 
     sessionData.forEach((s, i) => {
         s.channel = i + 1;
-        if (locks.microphone) s.microphone = lockedData[i].microphone;
         if (locks.tieLine) s.tieLine = lockedData[i].tieLine;
         if (locks.preamp) s.preamp = lockedData[i].preamp;
         if (locks.outboard1) s.outboard1 = lockedData[i].outboard1;
@@ -3537,6 +3563,7 @@ function exportData() {
     const data = JSON.stringify({
         equipment,
         sessionData,
+        pinnedColumns: window.pinnedColumns || {},
         customTemplates,
         manualRowColors: window.manualRowColors || {},
         sessionMeta: window.sessionMeta || {},
@@ -3562,6 +3589,10 @@ function importData(e) {
         const d = JSON.parse(ev.target.result); 
         equipment = ensureEquipmentDefaults(d.equipment);
         sessionData = d.sessionData; 
+        window.pinnedColumns = {
+            ...window.pinnedColumns,
+            ...(d.pinnedColumns || {})
+        };
         customTemplates = d.customTemplates || [];
         window.manualRowColors = d.manualRowColors || {};
         window.enableColors = d.colourSettings?.enabled ?? window.enableColors;
@@ -3597,6 +3628,7 @@ async function copyDataToClipboard() {
     const payload = JSON.stringify({
         equipment,
         sessionData,
+        pinnedColumns: window.pinnedColumns || {},
         customTemplates,
         manualRowColors: window.manualRowColors || {},
         sessionMeta: window.sessionMeta || {},
@@ -3862,6 +3894,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const d = JSON.parse(savedData);
         equipment = ensureEquipmentDefaults(d.equipment || equipment); // Fallback to default if undefined
         sessionData = d.sessionData || [];
+        window.pinnedColumns = {
+            ...window.pinnedColumns,
+            ...(d.pinnedColumns || {})
+        };
         customTemplates = d.customTemplates || [];
         window.manualRowColors = d.manualRowColors || {};
         window.sessionMeta = {
@@ -3933,6 +3969,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const setupWrap = document.getElementById('setupMenuWrap');
         const dataWrap = document.getElementById('dataMenuWrap');
         const inventorySetupWrap = document.getElementById('inventorySetupMenuWrap');
+        const isSetupPanelTrigger = !!(target && target.closest('[data-open-setup-panel]'));
         const inSetupMenu = !!(target && setupWrap && setupWrap.contains(target));
         const inDataMenu = !!(target && dataWrap && dataWrap.contains(target));
         const inInventorySetupMenu = !!(target && inventorySetupWrap && inventorySetupWrap.contains(target));
@@ -3943,7 +3980,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!inSetupMenu) closeSetupMenu();
         if (!inDataMenu) closeDataMenu();
         if (!inInventorySetupMenu) closeInventorySetupMenu();
-        if (!inSetupMenu && !inPopover) closeAllSetupPanels();
+        if (!inSetupMenu && !inPopover && !isSetupPanelTrigger) closeAllSetupPanels();
         if (!inEqDropdown) closeAllEqDropdowns();
         if (window.clearMode && !inSessionTable && !isClearModeBtn) {
             exitClearModeForEditing();
