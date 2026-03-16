@@ -101,6 +101,9 @@ function getDefaultPreferences() {
             mergeStereo: true,
             useShortNames: false
         },
+        pdfExport: {
+            printEmptyRows: false
+        },
         customTheme: {
             bg: '#0f0f0f',
             panels: '#1a1a1a',
@@ -180,6 +183,10 @@ function normalizePreferences(input) {
     merged.dawNamer = {
         mergeStereo: daw.mergeStereo !== false,
         useShortNames: daw.useShortNames === true
+    };
+    const pdf = input.pdfExport || {};
+    merged.pdfExport = {
+        printEmptyRows: pdf.printEmptyRows === true
     };
     const customTheme = input.customTheme || {};
     merged.customTheme = {
@@ -1788,6 +1795,7 @@ function renderPreferencesUI() {
     const onlyWhenNextEmpty = document.getElementById('prefOnlyWhenNextEmpty');
     const dawMergeStereo = document.getElementById('prefDawMergeStereo');
     const dawUseShortNames = document.getElementById('prefDawUseShortNames');
+    const pdfPrintEmptyRows = document.getElementById('prefPdfPrintEmptyRows');
     const customBg = document.getElementById('customBg');
     const customPanels = document.getElementById('customPanels');
     const customText = document.getElementById('customText');
@@ -1801,6 +1809,7 @@ function renderPreferencesUI() {
     if (onlyWhenNextEmpty) onlyWhenNextEmpty.checked = prefs.sourceAutoPair.onlyWhenNextRowEmpty !== false;
     if (dawMergeStereo) dawMergeStereo.checked = prefs.dawNamer?.mergeStereo !== false;
     if (dawUseShortNames) dawUseShortNames.checked = prefs.dawNamer?.useShortNames === true;
+    if (pdfPrintEmptyRows) pdfPrintEmptyRows.checked = prefs.pdfExport?.printEmptyRows === true;
     if (customBg) customBg.value = prefs.customTheme?.bg || '#0f0f0f';
     if (customPanels) customPanels.value = prefs.customTheme?.panels || '#1a1a1a';
     if (customText) customText.value = prefs.customTheme?.text || '#eeeeee';
@@ -1863,6 +1872,9 @@ function buildPreferencesDraftFromUI() {
         dawNamer: {
             mergeStereo: dawMergeStereo?.checked !== false,
             useShortNames: !!dawUseShortNames?.checked
+        },
+        pdfExport: {
+            printEmptyRows: !!document.getElementById('prefPdfPrintEmptyRows')?.checked
         },
         customTheme,
         autoColour: {
@@ -3252,8 +3264,10 @@ function initClearModeHandlers() {
 // PDF / PRINT EXPORT (VISIBLE COLUMNS ONLY)
 // ==========================================
 function exportToPrintable() {
-    // 1. Get only channels with data
-    const activeChannels = sessionData.filter(session => 
+    const prefs = normalizePreferences(window.preferences);
+    const printEmpty = prefs.pdfExport?.printEmptyRows === true;
+    // 1. Get channels (either all, or only those with data)
+    const activeChannels = printEmpty ? sessionData : sessionData.filter(session => 
         session.source.trim() !== '' || session.microphone !== '' || session.tieLine !== '' || 
         session.preamp !== '' || session.ad !== '' || session.outboard1 !== '' ||
         session.outboard2 !== '' || session.outboard3 !== '' || session.notes.trim() !== '' || session.recall.trim() !== ''
@@ -3484,7 +3498,14 @@ function importCSVInventory(event) {
         // 1. Split by any OS line ending (Windows, Mac, Linux)
         const rows = text.split(/\r\n|\n|\r/).filter(row => row.trim().length > 0);
         
-        let newEquipment = { microphones:[], tieLines: [], preampUnits: [], outboard: [], adUnits:[], hardNormals: [] };
+        let newEquipment = { 
+            microphones:[], 
+            tieLines: [], 
+            preampUnits: [], 
+            outboard:[], 
+            adUnits: [], 
+            hardNormals: equipment.hardNormals ||[] 
+        };
         
         // 2. Robust CSV row parser (handles commas inside quotes)
         const parseCSVRow = (str) => {

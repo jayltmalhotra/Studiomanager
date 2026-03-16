@@ -53,6 +53,11 @@ Use this before shipping UI changes:
 
 ## Recent Updates
 
+- Overhauled Session Setup controls: moved key actions into the top/action bars, simplified setup popovers, and added clearer safe mode UX.
+- Added channel row quick actions (`+` insert / `-` delete) with hover-zone interaction refinements that avoid layout shifts.
+- Added column pin controls in session headers with persistent pin state saved in app data.
+- Added `PDF Export Settings` in Preferences, including an option to print empty rows for handwritten notes.
+- Updated CSV inventory import to preserve existing studio hard normal routing.
 - Moved theme switching into the Preferences tab and removed the header theme control.
 - Added `App Themes & Colors` with built-in themes, a custom theme builder, and live preview.
 - Added DAW export preferences for stereo merge and short-name track formatting.
