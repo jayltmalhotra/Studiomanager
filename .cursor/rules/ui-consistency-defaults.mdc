@@ -13,6 +13,7 @@ Follow existing project UI patterns before introducing new styles.
 - Match nearby control density (font sizes, spacing, border radii) in the same tab/section.
 - Prefer existing classes (`btn-muted`, preference row patterns, panel styles) over creating one-off variants.
 - Avoid inline typography styles (`font-size`, `font-weight`, `line-height`) unless there is a documented one-off reason.
+- Keep text-entry controls aligned with the project input baseline (12px, body weight, input tokens) including special fields like hex inputs.
 - Use CSS variables for colors and borders; avoid hardcoded values unless explicitly required.
 - Keep UI compact and subtle per `STYLE_GUIDE.md`.
 

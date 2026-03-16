@@ -222,11 +222,15 @@ function getCustomThemeFromInputs() {
     const panelsInput = document.getElementById('customPanels');
     const textInput = document.getElementById('customText');
     const accentInput = document.getElementById('customAccent');
+    const bgHexInput = document.getElementById('customBgHex');
+    const panelsHexInput = document.getElementById('customPanelsHex');
+    const textHexInput = document.getElementById('customTextHex');
+    const accentHexInput = document.getElementById('customAccentHex');
     return {
-        bg: normalizeHexColor(bgInput?.value, custom.bg || '#0f0f0f'),
-        panels: normalizeHexColor(panelsInput?.value, custom.panels || '#1a1a1a'),
-        text: normalizeHexColor(textInput?.value, custom.text || '#eeeeee'),
-        accent: normalizeHexColor(accentInput?.value, custom.accent || '#FF9F1C')
+        bg: normalizeHexColor(bgHexInput?.value, normalizeHexColor(bgInput?.value, custom.bg || '#0f0f0f')),
+        panels: normalizeHexColor(panelsHexInput?.value, normalizeHexColor(panelsInput?.value, custom.panels || '#1a1a1a')),
+        text: normalizeHexColor(textHexInput?.value, normalizeHexColor(textInput?.value, custom.text || '#eeeeee')),
+        accent: normalizeHexColor(accentHexInput?.value, normalizeHexColor(accentInput?.value, custom.accent || '#FF9F1C'))
     };
 }
 function normalizeHardNormals(items) {
@@ -1767,6 +1771,10 @@ function renderPreferencesUI() {
     const customPanels = document.getElementById('customPanels');
     const customText = document.getElementById('customText');
     const customAccent = document.getElementById('customAccent');
+    const customBgHex = document.getElementById('customBgHex');
+    const customPanelsHex = document.getElementById('customPanelsHex');
+    const customTextHex = document.getElementById('customTextHex');
+    const customAccentHex = document.getElementById('customAccentHex');
     if (sourceBox) sourceBox.value = prefs.sourceSuggestions.join('\n');
     if (autoPairEnabled) autoPairEnabled.checked = prefs.sourceAutoPair.enabled !== false;
     if (onlyWhenNextEmpty) onlyWhenNextEmpty.checked = prefs.sourceAutoPair.onlyWhenNextRowEmpty !== false;
@@ -1776,6 +1784,10 @@ function renderPreferencesUI() {
     if (customPanels) customPanels.value = prefs.customTheme?.panels || '#1a1a1a';
     if (customText) customText.value = prefs.customTheme?.text || '#eeeeee';
     if (customAccent) customAccent.value = prefs.customTheme?.accent || '#FF9F1C';
+    if (customBgHex) customBgHex.value = prefs.customTheme?.bg || '#0f0f0f';
+    if (customPanelsHex) customPanelsHex.value = prefs.customTheme?.panels || '#1a1a1a';
+    if (customTextHex) customTextHex.value = prefs.customTheme?.text || '#eeeeee';
+    if (customAccentHex) customAccentHex.value = prefs.customTheme?.accent || '#FF9F1C';
     renderPreferencePairs('exact', prefs.sourceAutoPair.exactPairs);
     renderPreferencePairs('suffix', prefs.sourceAutoPair.suffixPairs);
     renderPreferenceNormals();
@@ -1813,10 +1825,7 @@ function buildPreferencesDraftFromUI() {
     const onlyWhenNextEmpty = document.getElementById('prefOnlyWhenNextEmpty');
     const dawMergeStereo = document.getElementById('prefDawMergeStereo');
     const dawUseShortNames = document.getElementById('prefDawUseShortNames');
-    const customBg = document.getElementById('customBg');
-    const customPanels = document.getElementById('customPanels');
-    const customText = document.getElementById('customText');
-    const customAccent = document.getElementById('customAccent');
+    const customTheme = getCustomThemeFromInputs();
     const sourceSuggestions = `${sourceBox?.value || ''}`
         .split('\n')
         .map(v => v.trim())
@@ -1834,12 +1843,7 @@ function buildPreferencesDraftFromUI() {
             mergeStereo: dawMergeStereo?.checked !== false,
             useShortNames: !!dawUseShortNames?.checked
         },
-        customTheme: {
-            bg: `${customBg?.value || ''}`.trim() || '#0f0f0f',
-            panels: `${customPanels?.value || ''}`.trim() || '#1a1a1a',
-            text: `${customText?.value || ''}`.trim() || '#eeeeee',
-            accent: `${customAccent?.value || ''}`.trim() || '#FF9F1C'
-        },
+        customTheme,
         autoColour: {
             groups: readPreferenceColourGroups()
         }
@@ -3717,13 +3721,17 @@ function updateInventoryCounts() {
 }
 
 // THEME INIT
-function applyCustomThemeColors(preferSaved = false) {
+function applyCustomThemeColors(preferSaved = false, source = 'auto') {
     const prefs = normalizePreferences(window.preferences);
     const custom = prefs.customTheme || {};
     const bgInput = document.getElementById('customBg');
     const panelsInput = document.getElementById('customPanels');
     const textInput = document.getElementById('customText');
     const accentInput = document.getElementById('customAccent');
+    const bgHexInput = document.getElementById('customBgHex');
+    const panelsHexInput = document.getElementById('customPanelsHex');
+    const textHexInput = document.getElementById('customTextHex');
+    const accentHexInput = document.getElementById('customAccentHex');
     const nextPalette = preferSaved
         ? normalizeCustomThemePalette(custom, {
             bg: '#0f0f0f',
@@ -3731,7 +3739,22 @@ function applyCustomThemeColors(preferSaved = false) {
             text: '#eeeeee',
             accent: '#FF9F1C'
         })
-        : getCustomThemeFromInputs();
+        : (() => {
+            if (source === 'hex') {
+                return {
+                    bg: normalizeHexColor(bgHexInput?.value, normalizeHexColor(bgInput?.value, custom.bg || '#0f0f0f')),
+                    panels: normalizeHexColor(panelsHexInput?.value, normalizeHexColor(panelsInput?.value, custom.panels || '#1a1a1a')),
+                    text: normalizeHexColor(textHexInput?.value, normalizeHexColor(textInput?.value, custom.text || '#eeeeee')),
+                    accent: normalizeHexColor(accentHexInput?.value, normalizeHexColor(accentInput?.value, custom.accent || '#FF9F1C'))
+                };
+            }
+            return {
+                bg: normalizeHexColor(bgInput?.value, custom.bg || '#0f0f0f'),
+                panels: normalizeHexColor(panelsInput?.value, custom.panels || '#1a1a1a'),
+                text: normalizeHexColor(textInput?.value, custom.text || '#eeeeee'),
+                accent: normalizeHexColor(accentInput?.value, custom.accent || '#FF9F1C')
+            };
+        })();
     const bg = nextPalette.bg;
     const panels = nextPalette.panels;
     const text = nextPalette.text;
@@ -3740,6 +3763,10 @@ function applyCustomThemeColors(preferSaved = false) {
     if (panelsInput) panelsInput.value = panels;
     if (textInput) textInput.value = text;
     if (accentInput) accentInput.value = accent;
+    if (bgHexInput) bgHexInput.value = bg;
+    if (panelsHexInput) panelsHexInput.value = panels;
+    if (textHexInput) textHexInput.value = text;
+    if (accentHexInput) accentHexInput.value = accent;
     window.preferences = normalizePreferences({
         ...prefs,
         customTheme: nextPalette
@@ -3775,10 +3802,18 @@ function applyCustomThemePreset(slot) {
     const panelsInput = document.getElementById('customPanels');
     const textInput = document.getElementById('customText');
     const accentInput = document.getElementById('customAccent');
+    const bgHexInput = document.getElementById('customBgHex');
+    const panelsHexInput = document.getElementById('customPanelsHex');
+    const textHexInput = document.getElementById('customTextHex');
+    const accentHexInput = document.getElementById('customAccentHex');
     if (bgInput) bgInput.value = palette.bg;
     if (panelsInput) panelsInput.value = palette.panels;
     if (textInput) textInput.value = palette.text;
     if (accentInput) accentInput.value = palette.accent;
+    if (bgHexInput) bgHexInput.value = palette.bg;
+    if (panelsHexInput) panelsHexInput.value = palette.panels;
+    if (textHexInput) textHexInput.value = palette.text;
+    if (accentHexInput) accentHexInput.value = palette.accent;
     window.preferences = normalizePreferences({
         ...prefs,
         customTheme: palette

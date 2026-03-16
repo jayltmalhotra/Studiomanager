@@ -627,7 +627,7 @@ h1, h2, h3, h4, h5, h6, strong, th, .tab, .btn-style, .btn-muted, .accordion-tit
 .pref-theme-color-label {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: space-between;
     gap: 6px;
     border: 1px solid color-mix(in srgb, var(--border-primary) 88%, transparent);
     border-radius: 8px;
@@ -638,6 +638,11 @@ h1, h2, h3, h4, h5, h6, strong, th, .tab, .btn-style, .btn-muted, .accordion-tit
     line-height: 1.2;
     white-space: nowrap;
 }
+.pref-theme-color-controls {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
 .pref-theme-color-label input[type="color"] {
     width: 26px;
     min-width: 26px;
@@ -647,6 +652,20 @@ h1, h2, h3, h4, h5, h6, strong, th, .tab, .btn-style, .btn-muted, .accordion-tit
     padding: 1px;
     background: transparent;
     cursor: pointer;
+}
+.pref-theme-color-label .pref-theme-hex-input {
+    width: 92px;
+    min-width: 92px;
+    padding: 6px;
+    border: 1px solid var(--input-border);
+    border-radius: 4px;
+    background: var(--input-bg);
+    color: var(--text-primary);
+    font-size: 12px;
+    font-weight: var(--ui-weight);
+    line-height: 1.2;
+    text-transform: none;
+    font-family: inherit;
 }
 .pref-pair-row {
     border: 1px solid color-mix(in srgb, var(--border-primary) 88%, transparent);
@@ -1013,28 +1032,37 @@ h4 { color: var(--accent-primary); margin-right: 10px; }
 .session-table { overflow-x: auto; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid var(--border-primary); }
 table { width: 100%; border-collapse: collapse; background: var(--bg-table); }
 th, td { border: 1px solid var(--border-primary); padding: 12px 8px; text-align: left; position: relative; }
-th { background: var(--bg-primary); color: var(--accent-primary); font-weight: var(--ui-weight-strong); font-size: 13px; text-transform: uppercase; }
+th { background: var(--bg-tertiary); color: var(--accent-primary); font-weight: var(--ui-weight-strong); font-size: 13px; text-transform: uppercase; }
 tr:nth-child(even) { background-color: var(--bg-tertiary); }
 tr:nth-child(odd) { background-color: var(--bg-secondary); }
 tr:hover { background-color: var(--bg-quaternary); }
 
-/* Dusk theme: subtle gray channel chips with amber numbers */
-html[data-theme="dusk"] .channel-number {
-    background: var(--bg-tertiary);
-    color: var(--accent-primary);
-    border: 1px solid var(--border-secondary);
-}
-
 .col-channel {
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    display: table-cell;
+    white-space: nowrap;
 }
 .mobile-reorder-btns { display: none; }
+.col-channel .channel-reorder-handle {
+    margin-right: 6px;
+    vertical-align: middle;
+}
+.col-channel .channel-number {
+    vertical-align: middle;
+}
 .channel-number {
-    background: var(--accent-primary); color: white; padding: 4px 8px;
-    border-radius: 4px; font-weight: var(--ui-weight); font-size: 12px; line-height: 1.2; user-select: none; transition: all 0.2s ease;
-    display: inline-block; min-width: 35px; text-align: center;
+    background: color-mix(in srgb, var(--accent-primary) 10%, var(--bg-secondary));
+    color: var(--accent-primary);
+    border: 1px solid color-mix(in srgb, var(--accent-primary) 40%, var(--border-primary));
+    padding: 3px 7px;
+    border-radius: 6px;
+    font-weight: var(--ui-weight-strong);
+    font-size: 11px;
+    line-height: 1.2;
+    user-select: none;
+    transition: all 0.2s ease;
+    display: inline-block;
+    min-width: 32px;
+    text-align: center;
 }
 .channel-number.drag-selected {
     background: var(--bg-secondary);
@@ -1043,22 +1071,27 @@ html[data-theme="dusk"] .channel-number {
     box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent-primary) 35%, transparent);
 }
 .channel-reorder-handle {
-    border: 1px dashed var(--border-primary);
+    border: none;
     background: transparent;
     color: var(--text-secondary);
-    border-radius: 6px;
-    font-size: 11px;
+    border-radius: 4px;
+    font-size: 10px;
     line-height: 1;
-    width: 24px;
-    min-width: 24px;
-    height: 24px;
+    width: 20px;
+    min-width: 20px;
+    height: 20px;
     cursor: grab;
     user-select: none;
+    opacity: 0.75;
+}
+.channel-reorder-handle:hover {
+    color: var(--accent-primary);
+    background: color-mix(in srgb, var(--accent-primary) 8%, transparent);
+    opacity: 1;
 }
 .channel-reorder-handle:active { cursor: grabbing; }
 .channel-reorder-handle.dragging {
     opacity: 0.72;
-    border-color: var(--accent-primary);
     color: var(--accent-primary);
 }
 tr.session-drag-over td {

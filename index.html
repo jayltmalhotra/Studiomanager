@@ -454,19 +454,31 @@
                             <div class="pref-theme-builder-grid">
                                 <label class="pref-theme-color-label">
                                     Background
-                                    <input id="customBg" type="color" oninput="applyCustomThemeColors()">
+                                    <span class="pref-theme-color-controls">
+                                        <input id="customBg" type="color" oninput="applyCustomThemeColors(false, 'picker')">
+                                        <input id="customBgHex" class="pref-theme-hex-input" type="text" value="#0f0f0f" maxlength="7" onchange="applyCustomThemeColors(false, 'hex')" spellcheck="false">
+                                    </span>
                                 </label>
                                 <label class="pref-theme-color-label">
                                     Panels
-                                    <input id="customPanels" type="color" oninput="applyCustomThemeColors()">
+                                    <span class="pref-theme-color-controls">
+                                        <input id="customPanels" type="color" oninput="applyCustomThemeColors(false, 'picker')">
+                                        <input id="customPanelsHex" class="pref-theme-hex-input" type="text" value="#1a1a1a" maxlength="7" onchange="applyCustomThemeColors(false, 'hex')" spellcheck="false">
+                                    </span>
                                 </label>
                                 <label class="pref-theme-color-label">
                                     Text
-                                    <input id="customText" type="color" oninput="applyCustomThemeColors()">
+                                    <span class="pref-theme-color-controls">
+                                        <input id="customText" type="color" oninput="applyCustomThemeColors(false, 'picker')">
+                                        <input id="customTextHex" class="pref-theme-hex-input" type="text" value="#eeeeee" maxlength="7" onchange="applyCustomThemeColors(false, 'hex')" spellcheck="false">
+                                    </span>
                                 </label>
                                 <label class="pref-theme-color-label">
                                     Accent
-                                    <input id="customAccent" type="color" oninput="applyCustomThemeColors()">
+                                    <span class="pref-theme-color-controls">
+                                        <input id="customAccent" type="color" oninput="applyCustomThemeColors(false, 'picker')">
+                                        <input id="customAccentHex" class="pref-theme-hex-input" type="text" value="#ff9f1c" maxlength="7" onchange="applyCustomThemeColors(false, 'hex')" spellcheck="false">
+                                    </span>
                                 </label>
                             </div>
                             <div class="pref-theme-actions">

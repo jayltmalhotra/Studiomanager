@@ -77,6 +77,7 @@ For all Preferences sections:
 - Heading: accent + `13px` style
 - Description copy: `12px`, muted
 - Inputs/textarea/selects: consistent border radius and input token colors
+- Text-like inputs (including hex/code inputs): match standard input sizing (`12px`, normal body weight) unless explicitly documented
 - Action row: use existing `btn-muted` family for consistency
 
 ## Motion
