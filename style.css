@@ -425,9 +425,23 @@ h1, h2, h3, h4, h5, h6, strong, th, .tab, .btn-style, .btn-muted, .accordion-tit
     text-align: left;
     cursor: pointer;
 }
+.pref-toolbar {
+    display: flex;
+    gap: 8px;
+    margin: 0 0 12px;
+}
 .pref-section-header h3 {
     margin: 0;
     color: var(--accent-primary);
+}
+.pref-section-meta {
+    margin-left: auto;
+    margin-right: 8px;
+    color: var(--text-secondary);
+    font-size: 11px;
+    line-height: 1.2;
+    opacity: 0.9;
+    white-space: nowrap;
 }
 .pref-section-toggle {
     color: var(--text-secondary);
@@ -450,6 +464,13 @@ h1, h2, h3, h4, h5, h6, strong, th, .tab, .btn-style, .btn-muted, .accordion-tit
 }
 .pref-panel-spaced {
     margin-top: 18px;
+}
+.pref-panel-full {
+    grid-column: 1 / -1;
+}
+#preferences .template-grid {
+    grid-template-columns: minmax(260px, 1fr) minmax(520px, 2fr);
+    align-items: start;
 }
 .pref-help-copy {
     margin: 0 0 10px;
@@ -1556,6 +1577,12 @@ optgroup option { font-weight: normal; color: var(--text-primary); padding-left:
 /* MOBILE "CHECKLIST / CARD" VIEW CSS                           */
 /* ============================================================ */
 @media (max-width: 768px) {
+    #preferences .template-grid {
+        grid-template-columns: 1fr;
+    }
+    .pref-panel-full {
+        grid-column: auto;
+    }
     .theme-switcher {
         position: static;
         margin-top: 12px;

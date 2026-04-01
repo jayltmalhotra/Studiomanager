@@ -1933,19 +1933,72 @@ function renderPreferencesUI() {
     renderPreferenceColourGroups(prefs.autoColour?.groups || []);
     renderManualColorGridFromPreferences(prefs.autoColour?.groups || []);
     renderAutoColourDiagnostics(prefs.autoColour?.groups || []);
+    updatePreferencesSectionSummaries();
     renderSourceSuggestionsDatalist();
     setTimeout(autoSizeSourceSuggestionsTextarea, 0);
     if (document.documentElement.getAttribute('data-theme') === 'custom') {
         applyCustomThemeColors();
     }
+    if (!window.preferencesSectionsInitialized) {
+        setPreferencesSectionsExpanded(false);
+        ['prefDawExportSection', 'prefPdfExportSection', 'prefThemeSection'].forEach(id => {
+            const section = document.getElementById(id);
+            if (section) section.classList.add('is-open');
+        });
+        window.preferencesSectionsInitialized = true;
+        updatePreferencesSectionSummaries();
+    }
     setPreferencesDirtyState(false);
 }
+function updatePreferencesSectionSummaries() {
+    const setMeta = (key, value) => {
+        const el = document.querySelector(`.pref-section-meta[data-section="${key}"]`);
+        if (el) el.textContent = value;
+    };
+    const sourceCount = `${`${document.getElementById('prefSourceSuggestions')?.value || ''}`.split('\n').map(v => v.trim()).filter(Boolean).length}`;
+    setMeta('sourceSuggestions', `${sourceCount} items`);
+    const exactCount = document.querySelectorAll('#prefExactPairsList .pref-pair-row').length;
+    const suffixCount = document.querySelectorAll('#prefSuffixPairsList .pref-pair-row').length;
+    const autoPairOn = !!document.getElementById('prefAutoPairEnabled')?.checked;
+    setMeta('autoPair', `${autoPairOn ? 'On' : 'Off'} • ${exactCount + suffixCount} rules`);
+    const normalsCount = readPreferenceNormalsFromUI().length;
+    setMeta('normals', `${normalsCount} routes`);
+    const mergeOn = !!document.getElementById('prefDawMergeStereo')?.checked;
+    const shortOn = !!document.getElementById('prefDawUseShortNames')?.checked;
+    setMeta('dawExport', `Stereo ${mergeOn ? 'On' : 'Off'} • Short ${shortOn ? 'On' : 'Off'}`);
+    const printEmpty = !!document.getElementById('prefPdfPrintEmptyRows')?.checked;
+    setMeta('pdfExport', `Empty rows ${printEmpty ? 'On' : 'Off'}`);
+    const theme = document.documentElement.getAttribute('data-theme') || 'dusk';
+    setMeta('theme', theme.charAt(0).toUpperCase() + theme.slice(1));
+    const colourGroups = document.querySelectorAll('#prefColourGroupsList .pref-colour-group-row').length;
+    setMeta('autoColour', `${colourGroups} groups`);
+    setMeta('backup', 'Import / Export');
+}
+window.setPreferencesSectionsExpanded = function(expanded) {
+    document.querySelectorAll('#preferences .pref-section').forEach(section => {
+        section.classList.toggle('is-open', !!expanded);
+        const toggle = section.querySelector('.pref-section-toggle');
+        if (toggle) toggle.textContent = expanded ? 'Hide' : 'Show';
+    });
+    updatePreferencesSectionSummaries();
+    setTimeout(autoSizeSourceSuggestionsTextarea, 0);
+};
+window.togglePrefColourDiagnostics = function() {
+    const wrap = document.getElementById('prefColourDiagnostics');
+    if (!wrap) return;
+    wrap.style.display = wrap.style.display === 'none' || wrap.style.display === '' ? 'block' : 'none';
+    const btn = wrap.previousElementSibling;
+    if (btn && btn.tagName === 'BUTTON') {
+        btn.textContent = wrap.style.display === 'block' ? 'Hide diagnostics' : 'Show diagnostics';
+    }
+};
 window.togglePreferencesSection = function(btn) {
     const section = btn?.closest('.pref-section');
     if (!section) return;
     section.classList.toggle('is-open');
     const toggle = section.querySelector('.pref-section-toggle');
     if (toggle) toggle.textContent = section.classList.contains('is-open') ? 'Hide' : 'Show';
+    updatePreferencesSectionSummaries();
     setTimeout(autoSizeSourceSuggestionsTextarea, 0);
 };
 function readPreferencePairs(type) {
@@ -2014,6 +2067,7 @@ function updatePreferencesDirtyState() {
         JSON.stringify(saved) !== JSON.stringify(draft) ||
         JSON.stringify(savedNormals) !== JSON.stringify(draftNormals)
     );
+    updatePreferencesSectionSummaries();
 }
 function savePreferencesFromUI() {
     equipment.hardNormals = readPreferenceNormalsFromUI();

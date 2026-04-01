@@ -334,10 +334,14 @@ t<body>
             </div>
         </div>
         <div id="preferences" class="tab-content">
+            <div class="pref-toolbar">
+                <button class="btn-muted" type="button" onclick="setPreferencesSectionsExpanded(true)">Expand all</button>
+                <button class="btn-muted" type="button" onclick="setPreferencesSectionsExpanded(false)">Collapse all</button>
+            </div>
             <div class="template-grid" style="display:grid;">
                 <div class="panel-box pref-section pref-panel" id="prefSourceSuggestionsSection">
                     <button class="pref-section-header" type="button" onclick="togglePreferencesSection(this)">
-                        <h3>Source Suggestions</h3>
+                        <h3>Source Suggestions</h3><span class="pref-section-meta" data-section="sourceSuggestions"></span>
                         <span class="pref-section-toggle">Show</span>
                     </button>
                     <div class="pref-section-body">
@@ -350,7 +354,7 @@ t<body>
                 </div>
                 <div class="panel-box pref-section pref-panel" id="prefAutoPairSection">
                     <button class="pref-section-header" type="button" onclick="togglePreferencesSection(this)">
-                        <h3>Source Auto-Pair Rules</h3>
+                        <h3>Source Auto-Pair Rules</h3><span class="pref-section-meta" data-section="autoPair"></span>
                         <span class="pref-section-toggle">Show</span>
                     </button>
                     <div class="pref-section-body">
@@ -372,9 +376,9 @@ t<body>
                         <button class="btn-muted" type="button" style="margin-top:8px;" onclick="addPreferencePairRow('suffix')">+ Add suffix pair</button>
                     </div>
                 </div>
-                <div class="panel-box pref-section pref-panel" id="prefNormallingSection">
+                <div class="panel-box pref-section pref-panel pref-panel-full" id="prefNormallingSection">
                     <button class="pref-section-header" type="button" onclick="togglePreferencesSection(this)">
-                        <h3>Studio Hard Normals</h3>
+                        <h3>Studio Hard Normals</h3><span class="pref-section-meta" data-section="normals"></span>
                         <span class="pref-section-toggle">Show</span>
                     </button>
                     <div class="pref-section-body">
@@ -388,7 +392,7 @@ t<body>
                 </div>
                 <div class="panel-box pref-section pref-panel" id="prefDawExportSection">
                     <button class="pref-section-header" type="button" onclick="togglePreferencesSection(this)">
-                        <h3>DAW Export Settings</h3>
+                        <h3>DAW Export Settings</h3><span class="pref-section-meta" data-section="dawExport"></span>
                         <span class="pref-section-toggle">Show</span>
                     </button>
                     <div class="pref-section-body">
@@ -404,7 +408,7 @@ t<body>
                 </div>
                 <div class="panel-box pref-section pref-panel pref-panel-spaced" id="prefPdfExportSection">
                     <button class="pref-section-header" type="button" onclick="togglePreferencesSection(this)">
-                        <h3>PDF Export Settings</h3>
+                        <h3>PDF Export Settings</h3><span class="pref-section-meta" data-section="pdfExport"></span>
                         <span class="pref-section-toggle">Show</span>
                     </button>
                     <div class="pref-section-body">
@@ -416,7 +420,7 @@ t<body>
                 </div>
                 <div class="panel-box pref-section pref-panel" id="prefThemeSection">
                     <button class="pref-section-header" type="button" onclick="togglePreferencesSection(this)">
-                        <h3>App Themes & Colors</h3>
+                        <h3>App Themes & Colors</h3><span class="pref-section-meta" data-section="theme"></span>
                         <span class="pref-section-toggle">Show</span>
                     </button>
                     <div class="pref-section-body">
@@ -467,28 +471,29 @@ t<body>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="panel-box pref-section pref-panel pref-panel-spaced">
-                <button class="pref-section-header" type="button" onclick="togglePreferencesSection(this)">
-                    <h3>Auto Colour Groups</h3>
-                    <span class="pref-section-toggle">Show</span>
-                </button>
-                <div class="pref-section-body">
-                    <p class="pref-help-copy">Set colour, keywords, and order for automatic row colouring.</p>
-                    <div id="prefColourGroupsList" style="display:flex; flex-direction:column; gap:6px; margin-bottom:8px;"></div>
-                    <button class="btn-muted" type="button" onclick="addPreferenceColourGroup()">+ Add colour group</button>
-                    <div class="pref-divider-block">
-                        <label class="pref-label-compact">Test source match</label>
-                        <input id="prefColourTestInput" type="text" placeholder="Type a source name (e.g. Crash L)" oninput="renderAutoColourDiagnostics()" style="width:100%; margin-bottom:8px;">
-                        <div id="prefColourTestResult" class="pref-note-md">No test source entered.</div>
-                        <div class="pref-note-sm">Keyword conflicts</div>
-                        <div id="prefColourConflictList" class="pref-note-xs"></div>
+                <div class="panel-box pref-section pref-panel pref-panel-spaced">
+                    <button class="pref-section-header" type="button" onclick="togglePreferencesSection(this)">
+                        <h3>Auto Colour Groups</h3><span class="pref-section-meta" data-section="autoColour"></span>
+                        <span class="pref-section-toggle">Show</span>
+                    </button>
+                    <div class="pref-section-body">
+                        <p class="pref-help-copy">Set colour, keywords, and order for automatic row colouring.</p>
+                        <div id="prefColourGroupsList" style="display:flex; flex-direction:column; gap:6px; margin-bottom:8px;"></div>
+                        <button class="btn-muted" type="button" onclick="addPreferenceColourGroup()">+ Add colour group</button>
+                        <button class="btn-muted" type="button" onclick="togglePrefColourDiagnostics()" style="margin-top:10px;">Show diagnostics</button>
+                        <div class="pref-divider-block" id="prefColourDiagnostics" style="display:none;">
+                            <label class="pref-label-compact">Test source match</label>
+                            <input id="prefColourTestInput" type="text" placeholder="Type a source name (e.g. Crash L)" oninput="renderAutoColourDiagnostics()" style="width:100%; margin-bottom:8px;">
+                            <div id="prefColourTestResult" class="pref-note-md">No test source entered.</div>
+                            <div class="pref-note-sm">Keyword conflicts</div>
+                            <div id="prefColourConflictList" class="pref-note-xs"></div>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="panel-box pref-section pref-panel pref-panel-spaced">
                 <button class="pref-section-header" type="button" onclick="togglePreferencesSection(this)">
-                    <h3>Preferences Backup</h3>
+                    <h3>Preferences Backup</h3><span class="pref-section-meta" data-section="backup"></span>
                     <span class="pref-section-toggle">Show</span>
                 </button>
                 <div class="pref-section-body">
