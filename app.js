@@ -729,6 +729,27 @@ function initializeSession(channelCount = 24) {
         sessionData.push({ channel: i, source: '', microphone: '', tieLine: '', preamp: '', outboard1: '', outboard2: '', outboard3: '', ad: '', recall: '', notes: '' });
     }
 }
+function sortAllEquipment() {
+    const sortFn = (a, b) => {
+        const catA = (a.category || '').toLowerCase();
+        const catB = (b.category || '').toLowerCase();
+        if (catA !== catB) return catA.localeCompare(catB);
+        
+        const makeA = (a.make || '').toLowerCase();
+        const makeB = (b.make || '').toLowerCase();
+        if (makeA !== makeB) return makeA.localeCompare(makeB);
+        
+        const nameA = (a.name || '').toLowerCase();
+        const nameB = (b.name || '').toLowerCase();
+        return nameA.localeCompare(nameB);
+    };
+
+    if (equipment.microphones) equipment.microphones.sort(sortFn);
+    if (equipment.outboard) equipment.outboard.sort(sortFn);
+    if (equipment.preampUnits) equipment.preampUnits.sort(sortFn);
+    if (equipment.adUnits) equipment.adUnits.sort(sortFn);
+    if (equipment.tieLines) equipment.tieLines.sort(sortFn);
+}
 
 // ==========================================
 // CORE RENDER & DROPDOWN LOGIC (BUG FIXES)
@@ -3562,6 +3583,7 @@ function importCSVInventory(event) {
         // 4. Apply changes and refresh UI
         pushHistory();
         equipment = ensureEquipmentDefaults(newEquipment);
+        sortAllEquipment();
         initializeSession(sessionData.length || 24);
         refreshAppUI();
         
@@ -3600,6 +3622,7 @@ function importData(e) {
         pushHistory();
         const d = JSON.parse(ev.target.result); 
         equipment = ensureEquipmentDefaults(d.equipment);
+        sortAllEquipment();
         sessionData = d.sessionData; 
         window.pinnedColumns = {
             ...window.pinnedColumns,
@@ -3943,6 +3966,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (savedData) {
         const d = JSON.parse(savedData);
         equipment = ensureEquipmentDefaults(d.equipment || equipment); // Fallback to default if undefined
+        sortAllEquipment();
         sessionData = d.sessionData || [];
         window.pinnedColumns = {
             ...window.pinnedColumns,
@@ -3962,6 +3986,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (d.preferences) window.preferences = normalizePreferences(d.preferences);
     } else {
         equipment = ensureEquipmentDefaults(equipment);
+        sortAllEquipment();
         initializeSession(24);
         window.sessionMeta = {
             artist: '',
