@@ -1733,16 +1733,99 @@ function getSimpleGearOptions(type, selectedValue) {
     });
     return html;
 }
-function createPreferenceNormalRow(normal = {}) {
+function renderNormalDropdown(idx, field, selectedValue) {
+    const units = field === 'preamp' ? equipment.preampUnits : (field === 'ad' ? equipment.adUnits : equipment.tieLines);
+    let displayValue = `<span class="eq-placeholder">Select ${getEqFieldLabel(field)}...</span>`;
+    
+    if (selectedValue) {
+        let make = '';
+        (units ||[]).forEach(u => { if (u.channels.some(c => c.name === selectedValue)) make = u.make || ''; });
+        displayValue = `<span class="eq-make">${escapeHtml(make)}${make ? ' ' : ''}</span><span class="eq-model">${escapeHtml(selectedValue)}</span>`;
+    }
+
+    return `<div class="eq-custom-dropdown ${selectedValue ? '' : 'is-empty'}" id="norm-custom-${field}-${idx}" data-field="${field}" data-value="${escapeHtml(selectedValue)}">
+        <button type="button" class="eq-dropdown-trigger" onclick="toggleNormalDropdown(${idx}, '${field}')">
+            <span class="eq-dropdown-value">${displayValue}</span>
+            <span class="eq-caret">▾</span>
+        </button>
+        <div class="eq-dropdown-menu" id="norm-menu-${field}-${idx}" style="display:none;" onclick="event.stopPropagation()">
+            <input id="norm-search-${field}-${idx}" class="eq-dropdown-search" type="text" placeholder="Search..." oninput="filterNormalDropdownOptions(${idx}, '${field}', this.value)">
+            <div class="eq-dropdown-options" id="norm-options-${field}-${idx}">
+                ${renderNormalOptions(idx, field, selectedValue, '')}
+            </div>
+        </div>
+    </div>`;
+}
+
+function renderNormalOptions(idx, field, selectedValue, query) {
+    const q = query.toLowerCase().trim();
+    const units = field === 'preamp' ? equipment.preampUnits : (field === 'ad' ? equipment.adUnits : equipment.tieLines);
+    let html = `<div class="eq-option-controls"><button type="button" class="eq-option-btn eq-option-empty" onclick="selectNormalOption(${idx}, '${field}', '')">Clear</button></div>`;
+    
+    let hasResults = false;
+    (units ||[]).forEach(u => {
+        const matchedChannels = u.channels.filter(c => {
+            if (!q) return true;
+            return c.name.toLowerCase().includes(q) || (u.name || '').toLowerCase().includes(q) || (u.make || '').toLowerCase().includes(q);
+        });
+        
+        if (matchedChannels.length > 0) {
+            hasResults = true;
+            html += `<div class="eq-group-label">${escapeHtml(u.name)}</div>`;
+            matchedChannels.forEach(c => {
+                const isSel = c.name === selectedValue;
+                html += `<button type="button" class="eq-option-btn ${isSel ? 'selected' : ''}" onclick="selectNormalOption(${idx}, '${field}', '${encodeURIComponent(c.name)}')">
+                    <span class="eq-make">${escapeHtml(u.make || '')}${u.make ? ' ' : ''}</span><span class="eq-model">${escapeHtml(c.name)}</span>
+                </button>`;
+            });
+        }
+    });
+    
+    if (!hasResults) return `<div class="eq-no-results">No matching options.</div>`;
+    return html;
+}
+
+window.toggleNormalDropdown = function(idx, field) {
+    const menu = document.getElementById(`norm-menu-${field}-${idx}`);
+    if (!menu) return;
+    const isOpen = menu.style.display === 'block';
+    document.querySelectorAll('.eq-dropdown-menu').forEach(m => m.style.display = 'none');
+    if (isOpen) return;
+    menu.style.display = 'block';
+    const search = document.getElementById(`norm-search-${field}-${idx}`);
+    if (search) { search.value = ''; search.focus(); }
+    filterNormalDropdownOptions(idx, field, '');
+};
+
+window.filterNormalDropdownOptions = function(idx, field, query) {
+    const wrap = document.getElementById(`norm-options-${field}-${idx}`);
+    const mainWrap = document.getElementById(`norm-custom-${field}-${idx}`);
+    const selectedValue = mainWrap ? mainWrap.dataset.value : '';
+    if (wrap) wrap.innerHTML = renderNormalOptions(idx, field, selectedValue, query);
+};
+
+window.selectNormalOption = function(idx, field, encodedValue) {
+    const value = encodedValue ? decodeURIComponent(encodedValue) : '';
+    const wrap = document.getElementById(`norm-custom-${field}-${idx}`);
+    if (wrap) {
+        wrap.dataset.value = value;
+        wrap.outerHTML = renderNormalDropdown(idx, field, value);
+    }
+    document.querySelectorAll('.eq-dropdown-menu').forEach(m => m.style.display = 'none');
+    updatePreferencesDirtyState();
+};
+
+function createPreferenceNormalRow(normal = {}, idx = 0) {
     const row = document.createElement('div');
     row.className = 'pref-normal-row';
+    row.dataset.idx = idx;
     row.style.display = 'grid';
     row.style.gridTemplateColumns = '1fr 1fr 1fr auto';
     row.style.gap = '6px';
     row.innerHTML = `
-        <select class="pref-norm-tie" onchange="updatePreferencesDirtyState()">${getSimpleGearOptions('tieLine', normal.tieLine)}</select>
-        <select class="pref-norm-pre" onchange="updatePreferencesDirtyState()">${getSimpleGearOptions('preamp', normal.preamp)}</select>
-        <select class="pref-norm-ad" onchange="updatePreferencesDirtyState()">${getSimpleGearOptions('ad', normal.ad)}</select>
+        ${renderNormalDropdown(idx, 'tieLine', normal.tieLine || '')}
+        ${renderNormalDropdown(idx, 'preamp', normal.preamp || '')}
+        ${renderNormalDropdown(idx, 'ad', normal.ad || '')}
         <button class="pref-remove-btn" type="button" onclick="this.closest('.pref-normal-row').remove(); updatePreferencesDirtyState();">Clear</button>
     `;
     return row;
@@ -1751,15 +1834,17 @@ function renderPreferenceNormals() {
     const container = document.getElementById('prefNormalsList');
     if (!container) return;
     container.innerHTML = '';
-    const safe = Array.isArray(equipment?.hardNormals) ? equipment.hardNormals : [];
+    const safe = Array.isArray(equipment?.hardNormals) ? equipment.hardNormals :[];
     if (!safe.length) {
-        container.appendChild(createPreferenceNormalRow());
+        container.appendChild(createPreferenceNormalRow({}, 0));
         return;
     }
-    safe.forEach(n => container.appendChild(createPreferenceNormalRow(n)));
+    safe.forEach((n, idx) => container.appendChild(createPreferenceNormalRow(n, idx)));
 }
 function addPreferenceNormalRow() {
-    document.getElementById('prefNormalsList')?.appendChild(createPreferenceNormalRow());
+    const container = document.getElementById('prefNormalsList');
+    const newIdx = container ? container.children.length : 0;
+    container?.appendChild(createPreferenceNormalRow({}, newIdx));
     updatePreferencesDirtyState();
 }
 function renderAutoColourDiagnostics(groupsOverride = null) {
@@ -1909,14 +1994,10 @@ function buildPreferencesDraftFromUI() {
 function readPreferenceNormalsFromUI() {
     return normalizeHardNormals(Array.from(document.querySelectorAll('.pref-normal-row'))
         .map(row => {
-            const tie = row.querySelector('.pref-norm-tie');
-            const pre = row.querySelector('.pref-norm-pre');
-            const ad = row.querySelector('.pref-norm-ad');
-            return {
-                tieLine: `${tie?.value || ''}`.trim(),
-                preamp: `${pre?.value || ''}`.trim(),
-                ad: `${ad?.value || ''}`.trim()
-            };
+            const tie = row.querySelector('[data-field="tieLine"]')?.dataset.value || '';
+            const pre = row.querySelector('[data-field="preamp"]')?.dataset.value || '';
+            const ad = row.querySelector('[data-field="ad"]')?.dataset.value || '';
+            return { tieLine: tie, preamp: pre, ad: ad };
         })
     );
 }
@@ -2537,21 +2618,19 @@ function updateEquipmentTables() {
         let processedItemsHTML = '';
 
         if (!isMulti) {
-            // 1. Filter Buttons
             const categories =[...new Set(items.map(i => i.category).filter(Boolean))];
             if (categories.length > 0) {
                 filterHTML = `<div style="padding: 10px 15px; background: var(--bg-tertiary); border-bottom: 1px solid var(--border-primary); display: flex; gap: 8px; flex-wrap: wrap;">
                     <button style="padding: 4px 12px; font-size: 12px; border-radius: 4px; cursor: pointer; background: var(--button-bg); color: var(--accent-primary); border: 1px solid var(--accent-primary);" onclick="filterInv(this, 'all')">All</button>
-                    ${categories.map(c => `<button style="padding: 4px 12px; font-size: 12px; border-radius: 4px; cursor: pointer; background: transparent; color: var(--text-primary); border: 1px solid var(--border-primary);" onclick="filterInv(this, '${c}')">${c}</button>`).join('')}
+                    ${categories.map(c => `<button style="padding: 4px 12px; font-size: 12px; border-radius: 4px; cursor: pointer; background: transparent; color: var(--text-primary); border: 1px solid var(--border-primary);" onclick="filterInv(this, '${c}')">${escapeHtml(c)}</button>`).join('')}
                 </div>`;
             }
 
-            // 2. Grouping Logic for Mics & Outboard
             const groups = {};
             items.forEach(item => {
-                const baseName = item.name; // Group strictly by identical name
+                const baseName = item.name; 
                 if (!groups[baseName]) {
-                    groups[baseName] = { baseName, category: item.category, total: 0, available: 0, inUse: 0 };
+                    groups[baseName] = { baseName, category: item.category, make: item.make, total: 0, available: 0, inUse: 0 };
                 }
                 groups[baseName].total++;
                 if (item.status === 'available') groups[baseName].available++;
@@ -2559,29 +2638,32 @@ function updateEquipmentTables() {
             });
 
             Object.values(groups).forEach(group => {
-                let color = '#28a745'; // Green
-                if (group.inUse > 0) color = group.inUse === group.total ? '#dc3545' : '#ffc107'; // Red if all used, Yellow if mixed
+                let color = '#28a745'; 
+                if (group.inUse > 0) color = group.inUse === group.total ? '#dc3545' : '#ffc107'; 
                 
                 const statusText = group.total === 1 
                     ? (group.inUse === 1 ? 'In Session' : 'Available')
                     : `${group.available}/${group.total} Available`;
+                
+                const makeHtml = group.make ? `<span style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">${escapeHtml(group.make)}</span>` : '';
                     
                 const content = isGrid 
-                    ? `<strong>${group.baseName}</strong><br><span style="font-size: 12px; color: var(--text-secondary);">${group.category || ''} • ${statusText}</span>`
-                    : `<strong style="flex: 1;">${group.baseName}</strong><span style="font-size: 12px; color: var(--text-secondary); width: 120px;">${group.category || ''}</span><span style="font-size: 12px; font-weight: var(--ui-weight-strong); color: ${color}; width: 100px; text-align: right;">${statusText}</span>`;
+                    ? `<div style="display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap;"><strong>${escapeHtml(group.baseName)}</strong>${makeHtml}</div><div style="margin-top: 4px; font-size: 12px; color: var(--text-secondary);">${escapeHtml(group.category || '')} • ${statusText}</div>`
+                    : `<div style="display: flex; align-items: baseline; gap: 8px; flex: 1; min-width: 0;"><strong style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(group.baseName)}</strong>${makeHtml}</div><div style="display: flex; align-items: center; gap: 15px; flex-shrink: 0;"><span style="font-size: 12px; color: var(--text-secondary); width: 100px; text-align: left;">${escapeHtml(group.category || '')}</span><span style="font-size: 12px; font-weight: var(--ui-weight-strong); color: ${color}; width: 100px; text-align: right;">${statusText}</span></div>`;
                     
                 processedItemsHTML += `<div class="inv-item" data-category="${group.category || ''}" style="${itemStyle} border-left: 4px solid ${color};">${content}</div>`;
             });
         } else {
-            // Preamp / AD / Tie Line Logic
             items.forEach(unit => {
                 const inUseCount = unit.channels.filter(c => c.status === 'in-use').length;
                 let color = '#28a745'; 
                 if (inUseCount > 0) color = inUseCount === unit.channels.length ? '#dc3545' : '#ffc107'; 
                 
+                const makeHtml = unit.make ? `<span style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">${escapeHtml(unit.make)}</span>` : '';
+
                 const content = isGrid
-                    ? `<strong>${unit.name}</strong><br><span style="font-size: 12px; color: var(--text-secondary);">${unit.channels.length - inUseCount}/${unit.channels.length} ch available</span>`
-                    : `<strong style="flex: 1;">${unit.name}</strong><span style="font-size: 12px; font-weight: var(--ui-weight-strong); color: ${color}; width: 200px; text-align: right;">${unit.channels.length - inUseCount}/${unit.channels.length} ch available</span>`;
+                    ? `<div style="display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap;"><strong>${escapeHtml(unit.name)}</strong>${makeHtml}</div><div style="margin-top: 4px; font-size: 12px; color: var(--text-secondary);">${unit.channels.length - inUseCount}/${unit.channels.length} ch available</div>`
+                    : `<div style="display: flex; align-items: baseline; gap: 8px; flex: 1; min-width: 0;"><strong style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(unit.name)}</strong>${makeHtml}</div><div style="display: flex; align-items: center; gap: 15px; flex-shrink: 0;"><span style="font-size: 12px; font-weight: var(--ui-weight-strong); color: ${color}; width: 150px; text-align: right;">${unit.channels.length - inUseCount}/${unit.channels.length} ch available</span></div>`;
 
                 processedItemsHTML += `<div style="${itemStyle} border-left: 4px solid ${color};">${content}</div>`;
             });
